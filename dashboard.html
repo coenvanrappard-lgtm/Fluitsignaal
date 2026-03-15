@@ -3,19 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Account — Nooitmeereenticketgemist</title>
+  <title>My Account — Fluitsignaal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'DM Sans', sans-serif; color: #1a1a1a; background: #f9f9f7; min-height: 100vh; }
-
     .topbar { background: #fff; border-bottom: 0.5px solid #e5e5e5; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; height: 56px; }
     .topbar-logo { font-family: 'DM Serif Display', serif; font-size: 17px; }
     .topbar-back { font-size: 13px; color: #888; text-decoration: none; }
-
     .layout { display: flex; max-width: 1000px; margin: 2rem auto; padding: 0 2rem; gap: 1.5rem; }
-
     .sidebar { width: 200px; flex-shrink: 0; }
     .sidebar-card { background: #fff; border: 0.5px solid #e5e5e5; border-radius: 12px; overflow: hidden; }
     .nav-item { display: flex; align-items: center; gap: 10px; padding: 0.75rem 1rem; font-size: 14px; cursor: pointer; color: #666; border-bottom: 0.5px solid #f0f0f0; }
@@ -25,7 +22,6 @@
     .sidebar-user { margin-top: 1rem; padding: 1rem; background: #fff; border: 0.5px solid #e5e5e5; border-radius: 12px; }
     .user-name { font-size: 13px; font-weight: 500; }
     .user-plan { font-size: 11px; color: #888; margin-top: 2px; }
-
     .main { flex: 1; }
     .panel { display: none; }
     .panel.active { display: block; }
@@ -34,7 +30,6 @@
     .panel-title { font-family: 'DM Serif Display', serif; font-size: 20px; }
     .panel-sub { font-size: 13px; color: #888; margin-top: 4px; font-weight: 300; }
     .panel-body { padding: 1.25rem 1.5rem; }
-
     .sport-heading { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #aaa; margin: 1.25rem 0 0.75rem; }
     .sport-heading:first-child { margin-top: 0; }
     .event-list { display: flex; flex-direction: column; gap: 8px; }
@@ -47,14 +42,12 @@
     .toggle.on { background: #1a1a1a; }
     .toggle::after { content: ''; position: absolute; width: 14px; height: 14px; background: #fff; border-radius: 50%; top: 3px; left: 3px; transition: transform 0.2s; }
     .toggle.on::after { transform: translateX(16px); }
-
     .alert-row { display: flex; align-items: center; justify-content: space-between; padding: 1rem; border: 0.5px solid #e5e5e5; border-radius: 8px; margin-bottom: 8px; }
     .alert-label { font-size: 14px; font-weight: 500; }
     .alert-desc { font-size: 12px; color: #888; margin-top: 2px; font-weight: 300; }
     .timing-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 0.5rem; }
     .timing-chip { padding: 6px 14px; border: 0.5px solid #e5e5e5; border-radius: 20px; font-size: 13px; cursor: pointer; color: #888; transition: all 0.15s; }
     .timing-chip.selected { border-color: #1a1a1a; color: #1a1a1a; font-weight: 500; }
-
     .plan-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
     .plan-card { border: 0.5px solid #e5e5e5; border-radius: 10px; padding: 1.25rem; }
     .plan-card.current { border: 2px solid #93c5fd; }
@@ -62,6 +55,126 @@
     .plan-card-name { font-size: 14px; font-weight: 500; }
     .plan-card-price { font-family: 'DM Serif Display', serif; font-size: 28px; margin: 0.5rem 0 0.1rem; }
     .plan-card-period { font-size: 11px; color: #888; margin-bottom: 1rem; }
+    .plan-card-features { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+    .plan-card-features li { font-size: 12px; color: #666; display: flex; gap: 6px; font-weight: 300; }
+    .plan-card-features li::before { content: '—'; color: #ccc; flex-shrink: 0; }
+    .save-bar { padding: 1rem 1.5rem; border-top: 0.5px solid #e5e5e5; display: flex; justify-content: flex-end; gap: 10px; }
+    .btn-save { background: #1a1a1a; color: #fff; border: none; padding: 10px 24px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; }
+    .btn-cancel { background: transparent; color: #888; border: 0.5px solid #ccc; padding: 10px 20px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; }
+  </style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-logo">Fluitsignaal</div>
+  <a href="index.html" class="topbar-back">← Back to site</a>
+</div>
+<div class="layout">
+  <div class="sidebar">
+    <div class="sidebar-card">
+      <div class="nav-item active" onclick="showPanel('events', this)">🗓 My events</div>
+      <div class="nav-item" onclick="showPanel('alerts', this)">🔔 Alert settings</div>
+      <div class="nav-item" onclick="showPanel('plan', this)">💳 My plan</div>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-name">Coen van Rappard</div>
+      <div class="user-plan">Pro plan</div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="panel active" id="panel-events">
+      <div class="panel-card">
+        <div class="panel-header"><div class="panel-title">My events</div><div class="panel-sub">Toggle the events you want to receive ticket alerts for</div></div>
+        <div class="panel-body">
+          <div class="sport-heading">🎾 Tennis</div>
+          <div class="event-list">
+            <div class="event-row selected" onclick="toggle(this)"><div><div class="event-name">French Open</div><div class="event-date">Sale opens March 31, 2026</div></div><div class="toggle on"></div></div>
+            <div class="event-row selected" onclick="toggle(this)"><div><div class="event-name">Wimbledon</div><div class="event-date">Ballot opens September 2026</div></div><div class="toggle on"></div></div>
+            <div class="event-row" onclick="toggle(this)"><div><div class="event-name">Australian Open</div><div class="event-date">Sale opens approx. October 2026</div></div><div class="toggle"></div></div>
+            <div class="event-row" onclick="toggle(this)"><div><div class="event-name">US Open</div><div class="event-date">Sale opens approx. April 2026</div></div><div class="toggle"></div></div>
+            <div class="event-row" onclick="toggle(this)"><div><div class="event-name">Rotterdam Open</div><div class="event-date">Sale opens approx. June 2026</div></div><div class="toggle"></div></div>
+            <div class="event-row" onclick="toggle(this)"><div><div class="event-name">Libema Open</div><div class="event-date">Date TBA</div></div><div class="toggle"></div></div>
+            <div class="event-row" onclick="toggle(this)"><div><div class="event-name">Davis Cup</div><div class="event-date">Date TBA</div></div><div class="toggle"></div></div>
+          </div>
+          <div class="sport-heading">⚽ Football</div>
+          <div class="event-list">
+            <div class="event-row selected" onclick="toggle(this)"><div><div class="event-name">Ajax</div><div class="event-date">Season tickets June 2026</div></div><div class="toggle on"></div></div>
+            <div class="event-row" onclick="toggle(this)"><div><div class="event-name">Feyenoord</div><div class="event-date">Season tickets June 2026</div></div><div class="toggle"></div></div>
+            <div class="event-row" onclick="toggle(this)"><div><div class="event-name">PSV</div><div class="event-date">Season tickets June 2026</div></div><div class="toggle"></div></div>
+            <div class="event-row selected" onclick="toggle(this)"><div><div class="event-name">Nederlands Elftal</div><div class="event-date">Via knvb.nl</div></div><div class="toggle on"></div></div>
+            <div class="event-row selected" onclick="toggle(this)"><div><div class="event-name">WK 2026</div><div class="event-date">Resale opens April 2, 2026</div></div><div class="toggle on"></div></div>
+            <div class="event-row" onclick="toggle(this)"><div><div class="event-name">EK</div><div class="event-date">Sale opens late 2027</div></div><div class="toggle"></div></div>
+            <div class="event-row" onclick="toggle(this)"><div><div class="event-name">WK Clubs</div><div class="event-date">Date TBA</div></div><div class="toggle"></div></div>
+          </div>
+          <div class="sport-heading">⛳ Golf</div>
+          <div class="event-list">
+            <div class="event-row selected" onclick="toggle(this)"><div><div class="event-name">Ryder Cup</div><div class="event-date">Ballot open now at rydercup.com</div></div><div class="toggle on"></div></div>
+            <div class="event-row" onclick="toggle(this)"><div><div class="event-name">Solheim Cup</div><div class="event-date">Date TBA</div></div><div class="toggle"></div></div>
+            <div class="event-row" onclick="toggle(this)"><div><div class="event-name">The Open Championship</div><div class="event-date">Sale opens approx. March 2026</div></div><div class="toggle"></div></div>
+            <div class="event-row" onclick="toggle(this)"><div><div class="event-name">KLM Open</div><div class="event-date">Date TBA</div></div><div class="toggle"></div></div>
+          </div>
+          <div class="sport-heading">🏉 Rugby</div>
+          <div class="event-list">
+            <div class="event-row" onclick="toggle(this)"><div><div class="event-name">Six Nations</div><div class="event-date">Sale opens approx. November 2026</div></div><div class="toggle"></div></div>
+          </div>
+          <div class="sport-heading">🏑 Hockey</div>
+          <div class="event-list">
+            <div class="event-row" onclick="toggle(this)"><div><div class="event-name">Hockey EK</div><div class="event-date">Date TBA</div></div><div class="toggle"></div></div>
+            <div class="event-row" onclick="toggle(this)"><div><div class="event-name">Hockey WK</div><div class="event-date">Date TBA</div></div><div class="toggle"></div></div>
+            <div class="event-row" onclick="toggle(this)"><div><div class="event-name">Hoofdklasse Play-offs</div><div class="event-date">Date TBA</div></div><div class="toggle"></div></div>
+          </div>
+        </div>
+        <div class="save-bar"><button class="btn-save">Save preferences</button></div>
+      </div>
+    </div>
+    <div class="panel" id="panel-alerts">
+      <div class="panel-card">
+        <div class="panel-header"><div class="panel-title">Alert settings</div><div class="panel-sub">Choose how and when you want to be notified</div></div>
+        <div class="panel-body">
+          <div class="sport-heading">Alert method</div>
+          <div class="alert-row"><div><div class="alert-label">Email</div><div class="alert-desc">coenvanrappard@gmail.com</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+          <div class="alert-row"><div><div class="alert-label">SMS</div><div class="alert-desc">Add a phone number to enable</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+          <div class="sport-heading" style="margin-top:1.5rem">When to alert me</div>
+          <div class="timing-row">
+            <div class="timing-chip selected" onclick="this.classList.toggle('selected')">1 week before</div>
+            <div class="timing-chip selected" onclick="this.classList.toggle('selected')">Day before</div>
+            <div class="timing-chip selected" onclick="this.classList.toggle('selected')">Day of</div>
+            <div class="timing-chip" onclick="this.classList.toggle('selected')">1 hour before</div>
+          </div>
+          <div class="sport-heading" style="margin-top:1.5rem">Weekly digest</div>
+          <div class="alert-row"><div><div class="alert-label">Monday morning summary</div><div class="alert-desc">Weekly overview of upcoming ticket sales</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+        </div>
+        <div class="save-bar"><button class="btn-save">Save settings</button></div>
+      </div>
+    </div>
+    <div class="panel" id="panel-plan">
+      <div class="panel-card">
+        <div class="panel-header"><div class="panel-title">My plan</div><div class="panel-sub">You are currently on the Pro plan</div></div>
+        <div class="panel-body">
+          <div class="plan-grid">
+            <div class="plan-card"><div class="plan-card-name">Free</div><div class="plan-card-price">€0</div><div class="plan-card-period">forever</div><ul class="plan-card-features"><li>Up to 3 events</li><li>Email alerts</li><li>Day-before reminders</li></ul></div>
+            <div class="plan-card current"><div class="plan-badge">Current plan</div><div class="plan-card-name">Pro</div><div class="plan-card-price">€4</div><div class="plan-card-period">per month</div><ul class="plan-card-features"><li>Unlimited events</li><li>Email + SMS alerts</li><li>Day-before and same-day</li><li>Lottery reminders</li><li>Resale price alerts</li></ul></div>
+            <div class="plan-card"><div class="plan-card-name">Team</div><div class="plan-card-price">€12</div><div class="plan-card-period">per month · 5 people</div><ul class="plan-card-features"><li>Everything in Pro</li><li>Shared event lists</li><li>Group coordination</li><li>Priority support</li></ul></div>
+          </div>
+        </div>
+        <div class="save-bar"><button class="btn-cancel">Cancel subscription</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function showPanel(name, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  el.classList.add('active');
+}
+function toggle(row) {
+  row.classList.toggle('selected');
+  row.querySelector('.toggle').classList.toggle('on');
+}
+</script>
+</body>
+</html>    .plan-card-period { font-size: 11px; color: #888; margin-bottom: 1rem; }
     .plan-card-features { list-style: none; display: flex; flex-direction: column; gap: 5px; }
     .plan-card-features li { font-size: 12px; color: #666; display: flex; gap: 6px; font-weight: 300; }
     .plan-card-features li::before { content: '—'; color: #ccc; flex-shrink: 0; }
