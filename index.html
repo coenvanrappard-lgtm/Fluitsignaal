@@ -10,24 +10,106 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'DM Sans', sans-serif; color: #1a1a1a; background: #fff; }
     .site { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
-    .nav { display: flex; justify-content: space-between; align-items: center; padding: 2rem 0; border-bottom: 0.5px solid #e5e5e5; }
-    .nav-logo { font-family: 'DM Serif Display', serif; font-size: 20px; letter-spacing: -0.3px; }
+
+    /* Urgency banner */
+    .urgency-banner {
+      background: #1a1a1a;
+      color: #e5e5e5;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      text-align: center;
+      padding: 9px 2rem;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+    .urgency-banner span { opacity: 0.6; margin: 0 10px; }
+    .urgency-dismiss {
+      position: absolute;
+      right: 1.25rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #888;
+      font-size: 16px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px;
+    }
+    .urgency-dismiss:hover { color: #ccc; }
+
+    /* Nav */
+    .nav { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 0; border-bottom: 0.5px solid #e5e5e5; }
+    .nav-logo { font-family: 'DM Serif Display', serif; font-size: 20px; letter-spacing: -0.3px; text-decoration: none; color: #1a1a1a; }
     .nav-links { display: flex; align-items: center; gap: 2rem; }
     .nav-link { font-size: 14px; color: #666; text-decoration: none; }
-    .nav-cta { background: #1a1a1a; color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; text-decoration: none; }
-    .hero { padding: 6rem 0 5rem; max-width: 720px; }
+    .nav-link:hover { color: #1a1a1a; }
+    .nav-cta { background: #1a1a1a; color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; text-decoration: none; transition: opacity 0.15s; }
+    .nav-cta:hover { opacity: 0.85; }
+    .nav-mobile-cta { display: none; }
+
+    /* Account modal */
+    .account-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .account-modal-overlay.open { display: flex; }
+    .account-modal {
+      background: #fff;
+      border-radius: 12px;
+      border: 0.5px solid #e5e5e5;
+      padding: 2rem;
+      width: 100%;
+      max-width: 380px;
+      position: relative;
+    }
+    .account-modal-title { font-family: 'DM Serif Display', serif; font-size: 22px; margin-bottom: 0.5rem; }
+    .account-modal-sub { font-size: 14px; color: #666; margin-bottom: 1.5rem; font-weight: 300; line-height: 1.5; }
+    .account-modal input {
+      width: 100%; padding: 12px 14px; border: 0.5px solid #ccc; border-radius: 8px;
+      font-family: 'DM Sans', sans-serif; font-size: 14px; color: #1a1a1a; outline: none;
+      margin-bottom: 10px; transition: border-color 0.15s;
+    }
+    .account-modal input:focus { border-color: #1a1a1a; }
+    .account-modal input::placeholder { color: #aaa; }
+    .account-modal-close {
+      position: absolute; top: 1rem; right: 1rem;
+      background: none; border: none; font-size: 20px; color: #aaa; cursor: pointer; line-height: 1;
+    }
+    .account-modal-close:hover { color: #1a1a1a; }
+
+    /* Hero */
+    .hero { padding: 5.5rem 0 4.5rem; max-width: 720px; }
     .hero-eyebrow { font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #888; margin-bottom: 1.5rem; }
     .hero-title { font-family: 'DM Serif Display', serif; font-size: clamp(42px, 6vw, 68px); line-height: 1.08; letter-spacing: -1px; margin-bottom: 1.5rem; }
     .hero-title em { font-style: italic; color: #888; }
     .hero-sub { font-size: 18px; font-weight: 300; line-height: 1.7; color: #666; max-width: 520px; margin-bottom: 2.5rem; }
     .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
-    .btn-primary { background: #1a1a1a; color: #fff; border: none; padding: 14px 28px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; }
-    .btn-secondary { background: transparent; color: #1a1a1a; border: 0.5px solid #bbb; padding: 14px 28px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 400; cursor: pointer; }
+    .btn-primary { background: #1a1a1a; color: #fff; border: none; padding: 14px 28px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; transition: opacity 0.15s; }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-secondary { background: transparent; color: #1a1a1a; border: 0.5px solid #bbb; padding: 14px 28px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 400; cursor: pointer; transition: border-color 0.15s; }
+    .btn-secondary:hover { border-color: #888; }
+
+    /* Events strip */
     .divider { height: 0.5px; background: #e5e5e5; }
-    .events-strip { padding: 2rem 0; display: flex; gap: 2rem; overflow-x: auto; scrollbar-width: none; align-items: center; }
+    .events-strip { padding: 1.75rem 0; display: flex; gap: 2rem; overflow-x: auto; scrollbar-width: none; align-items: center; }
     .events-strip::-webkit-scrollbar { display: none; }
-    .event-pill { white-space: nowrap; font-size: 13px; color: #888; flex-shrink: 0; }
-    .event-pill span { color: #1a1a1a; font-weight: 500; }
+    .event-pill { white-space: nowrap; font-size: 13px; color: #888; flex-shrink: 0; display: flex; align-items: center; gap: 8px; }
+    .event-pill-name { color: #1a1a1a; font-weight: 500; }
+    .event-pill-date { color: #888; font-size: 12px; }
+    .event-pill-sep { color: #ddd; font-size: 11px; }
+
+    /* How */
     .how { padding: 5rem 0; }
     .section-label { font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #aaa; margin-bottom: 3rem; }
     .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); border: 0.5px solid #e5e5e5; border-radius: 12px; overflow: hidden; }
@@ -36,12 +118,16 @@
     .step-num { font-family: 'DM Serif Display', serif; font-size: 36px; color: #ccc; margin-bottom: 1rem; line-height: 1; }
     .step-title { font-size: 15px; font-weight: 500; margin-bottom: 0.5rem; }
     .step-body { font-size: 14px; color: #666; line-height: 1.6; font-weight: 300; }
+
+    /* Sports */
     .sports { padding: 5rem 0; }
     .sports-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-top: 3rem; }
     .sport-card { border: 0.5px solid #e5e5e5; border-radius: 12px; padding: 1.25rem; }
     .sport-icon { font-size: 24px; margin-bottom: 0.75rem; }
     .sport-name { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
     .sport-events { font-size: 12px; color: #888; line-height: 1.7; font-weight: 300; }
+
+    /* Pricing */
     .pricing { padding: 5rem 0; }
     .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 3rem; }
     .plan { border: 0.5px solid #e5e5e5; border-radius: 12px; padding: 1.75rem; }
@@ -53,6 +139,8 @@
     .plan-features { list-style: none; display: flex; flex-direction: column; gap: 8px; }
     .plan-features li { font-size: 13px; color: #666; display: flex; gap: 8px; font-weight: 300; }
     .plan-features li::before { content: '—'; color: #ccc; flex-shrink: 0; }
+
+    /* Signup */
     .signup { padding: 5rem 0 6rem; }
     .signup-box { border: 0.5px solid #e5e5e5; border-radius: 12px; padding: 3rem; max-width: 580px; }
     .signup-title { font-family: 'DM Serif Display', serif; font-size: 32px; margin-bottom: 0.75rem; line-height: 1.2; }
@@ -79,12 +167,84 @@
     .signup-note { font-size: 12px; color: #aaa; margin-top: 4px; }
     .success-msg { display: none; background: #f0fdf4; border: 0.5px solid #86efac; border-radius: 8px; padding: 1rem; font-size: 14px; color: #166534; }
     .error-msg { display: none; background: #fef2f2; border: 0.5px solid #fca5a5; border-radius: 8px; padding: 1rem; font-size: 14px; color: #991b1b; }
+
+    /* Footer */
     .footer { border-top: 0.5px solid #e5e5e5; padding: 2rem 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
     .footer-logo { font-family: 'DM Serif Display', serif; font-size: 16px; }
+    .footer-tagline { font-size: 12px; color: #aaa; margin-top: 4px; font-weight: 300; }
+    .footer-left { display: flex; flex-direction: column; gap: 4px; }
+    .footer-links { display: flex; gap: 1.5rem; align-items: center; }
+    .footer-link { font-size: 12px; color: #aaa; text-decoration: none; }
+    .footer-link:hover { color: #1a1a1a; }
     .footer-note { font-size: 12px; color: #aaa; }
+
+    /* Mobile */
+    @media (max-width: 767px) {
+      .site { padding: 0 1.25rem; }
+
+      .urgency-banner { font-size: 11px; padding: 9px 3rem; }
+      .urgency-banner .pipe { display: none; }
+      .urgency-banner .line2 { display: block; }
+
+      .nav { padding: 1.25rem 0; }
+      .nav-links { display: none; }
+      .nav-mobile-cta {
+        display: block;
+        background: #1a1a1a;
+        color: #fff;
+        border: none;
+        padding: 9px 18px;
+        border-radius: 8px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      .hero { padding: 3.5rem 0 3rem; }
+      .hero-sub { font-size: 16px; }
+      .hero-actions { flex-direction: column; align-items: stretch; }
+      .btn-primary, .btn-secondary { text-align: center; width: 100%; }
+
+      .events-strip { gap: 1.5rem; padding: 1.5rem 0; }
+
+      .steps {
+        grid-template-columns: 1fr 1fr;
+        border-radius: 12px;
+      }
+      .step { border-right: 0.5px solid #e5e5e5; border-bottom: 0.5px solid #e5e5e5; }
+      .step:nth-child(2n) { border-right: none; }
+      .step:nth-last-child(-n+2) { border-bottom: none; }
+
+      .sports-grid { grid-template-columns: repeat(2, 1fr); }
+
+      .plans { grid-template-columns: 1fr; }
+
+      .signup-box { padding: 1.75rem 1.25rem; }
+      .signup-title { font-size: 26px; }
+      .plan-toggle { flex-direction: column; }
+
+      .footer { flex-direction: column; align-items: flex-start; gap: 1.25rem; }
+    }
+
+    @media (max-width: 400px) {
+      .steps { grid-template-columns: 1fr; }
+      .step { border-right: none; border-bottom: 0.5px solid #e5e5e5; }
+      .step:last-child { border-bottom: none; }
+      .sports-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
+
+<!-- Urgency banner -->
+<div class="urgency-banner" id="urgency-banner">
+  <span>French Open tickets on sale in 15 days</span>
+  <span class="pipe" aria-hidden="true">·</span>
+  <span>WK 2026 in 17 days</span>
+  <button class="urgency-dismiss" onclick="document.getElementById('urgency-banner').style.display='none'" aria-label="Dismiss">×</button>
+</div>
+
 <div class="site">
   <nav class="nav">
     <div class="nav-logo">Fluitsignaal</div>
@@ -92,32 +252,36 @@
       <a href="#how" class="nav-link">How it works</a>
       <a href="#sports" class="nav-link">Events</a>
       <a href="#pricing" class="nav-link">Pricing</a>
-      <a href="dashboard.html" class="nav-cta">My account</a>
+      <button class="nav-cta" onclick="openAccountModal()">My account</button>
     </div>
+    <button class="nav-mobile-cta" onclick="document.getElementById('signup-form').scrollIntoView({behavior:'smooth'})">Get alerts</button>
   </nav>
+
   <section class="hero">
     <p class="hero-eyebrow">Never miss a ticket again</p>
     <h1 class="hero-title">Tickets sell out.<br><em>Not for you.</em></h1>
     <p class="hero-sub">Get email alerts the moment tickets go on sale for the world's biggest sporting events — grand slams, World Cup, Ryder Cup, and more.</p>
     <div class="hero-actions">
-      <button class="btn-primary" onclick="document.getElementById('signup-form').scrollIntoView({behavior:'smooth'})">Get early access</button>
+      <button class="btn-primary" onclick="document.getElementById('signup-form').scrollIntoView({behavior:'smooth'})">Start for free</button>
       <button class="btn-secondary" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">See how it works</button>
     </div>
   </section>
+
   <div class="divider"></div>
   <div class="events-strip">
-    <div class="event-pill"><span>French Open</span> — Tennis</div>
-    <div class="event-pill"><span>Wimbledon</span> — Tennis</div>
-    <div class="event-pill"><span>WK 2026</span> — Football</div>
-    <div class="event-pill"><span>Ajax</span> — Football</div>
-    <div class="event-pill"><span>Ryder Cup</span> — Golf</div>
-    <div class="event-pill"><span>Nederlands Elftal</span> — Football</div>
-    <div class="event-pill"><span>Six Nations</span> — Rugby</div>
-    <div class="event-pill"><span>Hockey WK</span> — Hockey</div>
-    <div class="event-pill"><span>KLM Open</span> — Golf</div>
-    <div class="event-pill"><span>Rotterdam Open</span> — Tennis</div>
+    <div class="event-pill"><span class="event-pill-name">French Open</span><span class="event-pill-sep">—</span><span class="event-pill-date">31 mrt</span></div>
+    <div class="event-pill"><span class="event-pill-name">WK 2026</span><span class="event-pill-sep">—</span><span class="event-pill-date">2 apr</span></div>
+    <div class="event-pill"><span class="event-pill-name">Wimbledon</span><span class="event-pill-sep">—</span><span class="event-pill-date">sep 2026</span></div>
+    <div class="event-pill"><span class="event-pill-name">Ajax</span><span class="event-pill-sep">—</span><span class="event-pill-date">jun 2026</span></div>
+    <div class="event-pill"><span class="event-pill-name">Ryder Cup</span><span class="event-pill-sep">—</span><span class="event-pill-date">ballot open</span></div>
+    <div class="event-pill"><span class="event-pill-name">Nederlands Elftal</span><span class="event-pill-sep">—</span><span class="event-pill-date">via KNVB</span></div>
+    <div class="event-pill"><span class="event-pill-name">Six Nations</span><span class="event-pill-sep">—</span><span class="event-pill-date">nov 2026</span></div>
+    <div class="event-pill"><span class="event-pill-name">Hockey WK</span><span class="event-pill-sep">—</span><span class="event-pill-date">TBA</span></div>
+    <div class="event-pill"><span class="event-pill-name">KLM Open</span><span class="event-pill-sep">—</span><span class="event-pill-date">TBA</span></div>
+    <div class="event-pill"><span class="event-pill-name">Rotterdam Open</span><span class="event-pill-sep">—</span><span class="event-pill-date">jun 2026</span></div>
   </div>
   <div class="divider"></div>
+
   <section class="how" id="how">
     <p class="section-label">How it works</p>
     <div class="steps">
@@ -127,6 +291,7 @@
       <div class="step"><div class="step-num">04</div><div class="step-title">Get your tickets</div><div class="step-body">Be among the first to the queue. No more finding out a week after tickets sold out.</div></div>
     </div>
   </section>
+
   <section class="sports" id="sports">
     <p class="section-label">Events we cover</p>
     <div class="sports-grid">
@@ -137,6 +302,7 @@
       <div class="sport-card"><div class="sport-icon">🏑</div><div class="sport-name">Hockey</div><div class="sport-events">EK · WK · Hoofdklasse Play-offs</div></div>
     </div>
   </section>
+
   <section class="pricing" id="pricing">
     <p class="section-label">Pricing</p>
     <div class="plans">
@@ -145,6 +311,7 @@
       <div class="plan"><div class="plan-name">Team</div><div class="plan-price">€12</div><div class="plan-period">per month, up to 5 people</div><ul class="plan-features"><li>Everything in Pro</li><li>Shared event lists</li><li>Group coordination tools</li><li>Priority support</li></ul></div>
     </div>
   </section>
+
   <section class="signup" id="signup-form">
     <div class="signup-box">
       <h2 class="signup-title">Start getting alerts</h2>
@@ -214,15 +381,54 @@
       </div>
     </div>
   </section>
+
   <footer class="footer">
-    <div class="footer-logo">Fluitsignaal</div>
-    <div class="footer-note">Amsterdam, Netherlands · 2026</div>
+    <div class="footer-left">
+      <div class="footer-logo">Fluitsignaal</div>
+      <div class="footer-tagline">Ticket alerts for people who actually want to go.</div>
+    </div>
+    <div class="footer-links">
+      <a href="#signup-form" class="footer-link" onclick="document.getElementById('signup-form').scrollIntoView({behavior:'smooth'});return false;">Sign up</a>
+      <button class="footer-link" onclick="openAccountModal()" style="background:none;border:none;cursor:pointer;font-family:inherit;">My account</button>
+      <span class="footer-note">Amsterdam · 2026</span>
+    </div>
   </footer>
 </div>
+
+<!-- Account modal -->
+<div class="account-modal-overlay" id="account-modal-overlay" onclick="closeAccountModalOnOverlay(event)">
+  <div class="account-modal">
+    <button class="account-modal-close" onclick="closeAccountModal()" aria-label="Close">×</button>
+    <div class="account-modal-title">My account</div>
+    <p class="account-modal-sub">Enter your email address to access your alert preferences.</p>
+    <input type="email" id="account-email-input" placeholder="your@email.com" onkeydown="if(event.key==='Enter')goToAccount()" />
+    <button class="btn-primary" style="width:100%" onclick="goToAccount()">Go to my account</button>
+  </div>
+</div>
+
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw0JIM8eDOOlemq2v2oxDccRhw9zlh27IsyZI4giUJLDGWwrPcyEziia3D3z3AmCg85/exec';
 let currentPlan = 'free';
 let selectedEvents = new Set();
+
+function openAccountModal() {
+  document.getElementById('account-modal-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('account-email-input').focus(), 50);
+}
+
+function closeAccountModal() {
+  document.getElementById('account-modal-overlay').classList.remove('open');
+}
+
+function closeAccountModalOnOverlay(e) {
+  if (e.target === document.getElementById('account-modal-overlay')) closeAccountModal();
+}
+
+function goToAccount() {
+  const email = document.getElementById('account-email-input').value.trim();
+  if (!email) { document.getElementById('account-email-input').focus(); return; }
+  window.location.href = 'dashboard.html?email=' + encodeURIComponent(email);
+}
 
 function selectPlan(plan) {
   currentPlan = plan;

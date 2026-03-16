@@ -9,20 +9,30 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'DM Sans', sans-serif; color: #1a1a1a; background: #f9f9f7; min-height: 100vh; }
-    .topbar { background: #fff; border-bottom: 0.5px solid #e5e5e5; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; height: 56px; }
+
+    /* Topbar */
+    .topbar { background: #fff; border-bottom: 0.5px solid #e5e5e5; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; height: 56px; position: sticky; top: 0; z-index: 10; }
     .topbar-logo { font-family: 'DM Serif Display', serif; font-size: 17px; }
     .topbar-back { font-size: 13px; color: #888; text-decoration: none; }
+    .topbar-back:hover { color: #1a1a1a; }
+
+    /* Desktop layout */
     .layout { display: flex; max-width: 1000px; margin: 2rem auto; padding: 0 2rem; gap: 1.5rem; }
     .sidebar { width: 200px; flex-shrink: 0; }
     .sidebar-card { background: #fff; border: 0.5px solid #e5e5e5; border-radius: 12px; overflow: hidden; }
-    .nav-item { display: flex; align-items: center; gap: 10px; padding: 0.75rem 1rem; font-size: 14px; cursor: pointer; color: #666; border-bottom: 0.5px solid #f0f0f0; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 0.75rem 1rem; font-size: 14px; cursor: pointer; color: #666; border-bottom: 0.5px solid #f0f0f0; transition: background 0.1s; }
     .nav-item:last-child { border-bottom: none; }
     .nav-item:hover { background: #f9f9f7; }
     .nav-item.active { color: #1a1a1a; font-weight: 500; background: #f9f9f7; }
     .sidebar-user { margin-top: 1rem; padding: 1rem; background: #fff; border: 0.5px solid #e5e5e5; border-radius: 12px; }
     .user-name { font-size: 13px; font-weight: 500; }
     .user-plan { font-size: 11px; color: #888; margin-top: 2px; }
-    .main { flex: 1; }
+    .main { flex: 1; min-width: 0; }
+
+    /* Mobile tab bar — hidden on desktop */
+    .mobile-tabs { display: none; }
+
+    /* Panels */
     .panel { display: none; }
     .panel.active { display: block; }
     .panel-card { background: #fff; border: 0.5px solid #e5e5e5; border-radius: 12px; overflow: hidden; margin-bottom: 1rem; }
@@ -30,18 +40,35 @@
     .panel-title { font-family: 'DM Serif Display', serif; font-size: 20px; }
     .panel-sub { font-size: 13px; color: #888; margin-top: 4px; font-weight: 300; }
     .panel-body { padding: 1.25rem 1.5rem; }
+
+    /* Event list */
     .sport-heading { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #aaa; margin: 1.25rem 0 0.75rem; }
     .sport-heading:first-child { margin-top: 0; }
     .event-list { display: flex; flex-direction: column; gap: 8px; }
     .event-row { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; border: 0.5px solid #e5e5e5; border-radius: 8px; cursor: pointer; transition: border-color 0.15s; }
     .event-row:hover { border-color: #bbb; }
     .event-row.selected { border-color: #1a1a1a; background: #fafafa; }
+    .event-row-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
     .event-name { font-size: 14px; font-weight: 500; }
     .event-date { font-size: 12px; color: #888; margin-top: 2px; font-weight: 300; }
+
+    /* Soon badge */
+    .soon-badge {
+      display: inline-flex; align-items: center;
+      background: #f0fdf4; color: #166534;
+      border: 0.5px solid #86efac;
+      font-size: 10px; font-weight: 500;
+      padding: 2px 7px; border-radius: 5px;
+      flex-shrink: 0; white-space: nowrap;
+    }
+
+    /* Toggle switch */
     .toggle { width: 36px; height: 20px; border-radius: 10px; background: #ddd; position: relative; transition: background 0.2s; flex-shrink: 0; }
     .toggle.on { background: #1a1a1a; }
     .toggle::after { content: ''; position: absolute; width: 14px; height: 14px; background: #fff; border-radius: 50%; top: 3px; left: 3px; transition: transform 0.2s; }
     .toggle.on::after { transform: translateX(16px); }
+
+    /* Plan grid */
     .plan-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
     .plan-card { border: 0.5px solid #e5e5e5; border-radius: 10px; padding: 1.25rem; }
     .plan-card.current { border: 2px solid #93c5fd; }
@@ -52,15 +79,81 @@
     .plan-card-features { list-style: none; display: flex; flex-direction: column; gap: 5px; }
     .plan-card-features li { font-size: 12px; color: #666; display: flex; gap: 6px; font-weight: 300; }
     .plan-card-features li::before { content: '—'; color: #ccc; flex-shrink: 0; }
+
+    /* Save bar */
     .save-bar { padding: 1rem 1.5rem; border-top: 0.5px solid #e5e5e5; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
     .save-status { font-size: 13px; color: #166534; display: none; }
-    .btn-save { background: #1a1a1a; color: #fff; border: none; padding: 10px 24px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; }
+    .btn-save { background: #1a1a1a; color: #fff; border: none; padding: 10px 24px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: opacity 0.15s; }
     .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
     .btn-cancel { background: transparent; color: #888; border: 0.5px solid #ccc; padding: 10px 20px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; }
+
+    /* Loading */
     .loading { padding: 3rem; text-align: center; color: #aaa; font-size: 14px; }
-    .not-found { padding: 2rem 1.5rem; }
-    .not-found input { padding: 10px 14px; border: 0.5px solid #ccc; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; width: 100%; margin-bottom: 10px; outline: none; }
-    .not-found input:focus { border-color: #1a1a1a; }
+
+    /* Email prompt — improved */
+    .not-found-wrap {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 60vh; padding: 2rem;
+    }
+    .not-found-card {
+      background: #fff; border: 0.5px solid #e5e5e5; border-radius: 12px;
+      padding: 2.5rem 2rem; max-width: 400px; width: 100%; text-align: center;
+    }
+    .not-found-icon { font-size: 32px; margin-bottom: 1.25rem; }
+    .not-found-title { font-family: 'DM Serif Display', serif; font-size: 22px; margin-bottom: 0.5rem; }
+    .not-found-sub { font-size: 14px; color: #666; font-weight: 300; line-height: 1.6; margin-bottom: 1.75rem; }
+    .not-found-card input {
+      width: 100%; padding: 12px 14px;
+      border: 0.5px solid #ccc; border-radius: 8px;
+      font-family: 'DM Sans', sans-serif; font-size: 14px;
+      color: #1a1a1a; outline: none; margin-bottom: 10px;
+      transition: border-color 0.15s; text-align: left;
+    }
+    .not-found-card input:focus { border-color: #1a1a1a; }
+    .not-found-card input::placeholder { color: #aaa; }
+    .not-found-back { display: inline-block; margin-top: 1.25rem; font-size: 13px; color: #aaa; text-decoration: none; }
+    .not-found-back:hover { color: #1a1a1a; }
+
+    /* Mobile */
+    @media (max-width: 767px) {
+      .layout { flex-direction: column; margin: 0; padding: 0; gap: 0; }
+
+      /* Hide desktop sidebar */
+      .sidebar { display: none; }
+
+      /* Mobile tab bar */
+      .mobile-tabs {
+        display: flex;
+        background: #fff;
+        border-bottom: 0.5px solid #e5e5e5;
+        position: sticky;
+        top: 56px;
+        z-index: 9;
+      }
+      .mobile-tab {
+        flex: 1; padding: 0.9rem 1rem;
+        font-size: 14px; font-weight: 400; color: #888;
+        text-align: center; cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: color 0.15s, border-color 0.15s;
+        background: none; border-top: none; border-left: none; border-right: none;
+        font-family: 'DM Sans', sans-serif;
+      }
+      .mobile-tab.active { color: #1a1a1a; font-weight: 500; border-bottom-color: #1a1a1a; }
+
+      .main { padding: 1.25rem; }
+
+      .panel-header { padding: 1rem 1.25rem; }
+      .panel-body { padding: 1rem 1.25rem; }
+      .save-bar { padding: 0.875rem 1.25rem; }
+
+      .plan-grid { grid-template-columns: 1fr; }
+
+      .not-found-wrap { min-height: 50vh; padding: 1.5rem; }
+      .not-found-card { padding: 2rem 1.5rem; }
+
+      .topbar { padding: 0 1.25rem; }
+    }
   </style>
 </head>
 <body>
@@ -68,6 +161,13 @@
   <div class="topbar-logo">Fluitsignaal</div>
   <a href="index.html" class="topbar-back">← Back to site</a>
 </div>
+
+<!-- Mobile tab bar (hidden on desktop) -->
+<div class="mobile-tabs">
+  <button class="mobile-tab active" id="mobile-tab-events" onclick="showPanel('events', this, 'mobile-tab-events')">My events</button>
+  <button class="mobile-tab" id="mobile-tab-plan" onclick="showPanel('plan', this, 'mobile-tab-plan')">My plan</button>
+</div>
+
 <div class="layout">
   <div class="sidebar">
     <div class="sidebar-card">
@@ -79,8 +179,8 @@
       <div class="user-plan" id="user-plan">—</div>
     </div>
   </div>
-  <div class="main">
 
+  <div class="main">
     <div class="panel active" id="panel-events">
       <div class="panel-card">
         <div class="panel-header">
@@ -128,9 +228,9 @@
         <div class="save-bar"><button class="btn-cancel">Contact us to change plan</button></div>
       </div>
     </div>
-
   </div>
 </div>
+
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw0JIM8eDOOlemq2v2oxDccRhw9zlh27IsyZI4giUJLDGWwrPcyEziia3D3z3AmCg85/exec';
 
@@ -138,48 +238,48 @@ const EVENTS = {
   tennis: {
     label: '🎾 Tennis',
     items: [
-      { id: 'french_open', name: 'French Open', date: 'Sale opens March 31, 2026' },
-      { id: 'wimbledon', name: 'Wimbledon', date: 'Ballot opens September 2026' },
-      { id: 'australian_open', name: 'Australian Open', date: 'Sale opens approx. October 2026' },
-      { id: 'us_open', name: 'US Open', date: 'Sale opens approx. April 2026' },
-      { id: 'rotterdam_open', name: 'Rotterdam Open', date: 'Sale opens approx. June 2026' },
-      { id: 'libema_open', name: 'Libema Open', date: 'Date TBA' },
-      { id: 'davis_cup', name: 'Davis Cup', date: 'Date TBA' },
+      { id: 'french_open', name: 'French Open', date: 'Sale opens March 31, 2026', saleDate: '2026-03-31' },
+      { id: 'wimbledon', name: 'Wimbledon', date: 'Ballot opens September 2026', saleDate: null },
+      { id: 'australian_open', name: 'Australian Open', date: 'Sale opens approx. October 2026', saleDate: null },
+      { id: 'us_open', name: 'US Open', date: 'Sale opens approx. April 2026', saleDate: '2026-04-15' },
+      { id: 'rotterdam_open', name: 'Rotterdam Open', date: 'Sale opens approx. June 2026', saleDate: null },
+      { id: 'libema_open', name: 'Libema Open', date: 'Date TBA', saleDate: null },
+      { id: 'davis_cup', name: 'Davis Cup', date: 'Date TBA', saleDate: null },
     ]
   },
   football: {
     label: '⚽ Football',
     items: [
-      { id: 'ajax', name: 'Ajax', date: 'Season tickets June 2026' },
-      { id: 'feyenoord', name: 'Feyenoord', date: 'Season tickets June 2026' },
-      { id: 'psv', name: 'PSV', date: 'Season tickets June 2026' },
-      { id: 'nederlands_elftal', name: 'Nederlands Elftal', date: 'Via knvb.nl' },
-      { id: 'world_cup', name: 'WK 2026', date: 'Resale opens April 2, 2026' },
-      { id: 'euro', name: 'EK', date: 'Date TBA' },
-      { id: 'club_world_cup', name: 'WK Clubs', date: 'Date TBA' },
+      { id: 'ajax', name: 'Ajax', date: 'Season tickets June 2026', saleDate: null },
+      { id: 'feyenoord', name: 'Feyenoord', date: 'Season tickets June 2026', saleDate: null },
+      { id: 'psv', name: 'PSV', date: 'Season tickets June 2026', saleDate: null },
+      { id: 'nederlands_elftal', name: 'Nederlands Elftal', date: 'Via knvb.nl', saleDate: null },
+      { id: 'world_cup', name: 'WK 2026', date: 'Resale opens April 2, 2026', saleDate: '2026-04-02' },
+      { id: 'euro', name: 'EK', date: 'Date TBA', saleDate: null },
+      { id: 'club_world_cup', name: 'WK Clubs', date: 'Date TBA', saleDate: null },
     ]
   },
   golf: {
     label: '⛳ Golf',
     items: [
-      { id: 'ryder_cup', name: 'Ryder Cup', date: 'Ballot open at rydercup.com' },
-      { id: 'solheim_cup', name: 'Solheim Cup', date: 'Date TBA' },
-      { id: 'the_open', name: 'The Open Championship', date: 'Sale opens approx. March 2026' },
-      { id: 'klm_open', name: 'KLM Open', date: 'Date TBA' },
+      { id: 'ryder_cup', name: 'Ryder Cup', date: 'Ballot open at rydercup.com', saleDate: null },
+      { id: 'solheim_cup', name: 'Solheim Cup', date: 'Date TBA', saleDate: null },
+      { id: 'the_open', name: 'The Open Championship', date: 'Sale opens approx. March 2026', saleDate: null },
+      { id: 'klm_open', name: 'KLM Open', date: 'Date TBA', saleDate: null },
     ]
   },
   rugby: {
     label: '🏉 Rugby',
     items: [
-      { id: 'six_nations', name: 'Six Nations', date: 'Sale opens approx. November 2026' },
+      { id: 'six_nations', name: 'Six Nations', date: 'Sale opens approx. November 2026', saleDate: null },
     ]
   },
   hockey: {
     label: '🏑 Hockey',
     items: [
-      { id: 'hockey_ek', name: 'Hockey EK', date: 'Date TBA' },
-      { id: 'hockey_wk', name: 'Hockey WK', date: 'Date TBA' },
-      { id: 'hockey_hoofdklasse', name: 'Hoofdklasse Play-offs', date: 'Sale opens approx. March 2026' },
+      { id: 'hockey_ek', name: 'Hockey EK', date: 'Date TBA', saleDate: null },
+      { id: 'hockey_wk', name: 'Hockey WK', date: 'Date TBA', saleDate: null },
+      { id: 'hockey_hoofdklasse', name: 'Hoofdklasse Play-offs', date: 'Sale opens approx. March 2026', saleDate: '2026-03-25' },
     ]
   }
 };
@@ -187,11 +287,25 @@ const EVENTS = {
 let userEmail = null;
 let userPlan = 'free';
 
-function showPanel(name, el) {
+const TODAY = new Date('2026-03-16');
+const SOON_DAYS = 30;
+
+function isSoon(dateStr) {
+  if (!dateStr) return false;
+  const d = new Date(dateStr);
+  const diff = (d - TODAY) / (1000 * 60 * 60 * 24);
+  return diff >= 0 && diff <= SOON_DAYS;
+}
+
+function showPanel(name, el, mobileTabId) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.mobile-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
-  el.classList.add('active');
+  if (el) el.classList.add('active');
+  if (mobileTabId) {
+    document.getElementById(mobileTabId)?.classList.add('active');
+  }
 }
 
 function toggleEvent(row) {
@@ -206,8 +320,15 @@ function renderEvents(selectedIds) {
     html += `<div class="sport-heading">${sport.label}</div><div class="event-list">`;
     for (const e of sport.items) {
       const sel = selectedIds.includes(e.id);
+      const soonBadge = isSoon(e.saleDate) ? `<span class="soon-badge">Soon</span>` : '';
       html += `<div class="event-row${sel ? ' selected' : ''}" data-id="${e.id}" onclick="toggleEvent(this)">
-        <div><div class="event-name">${e.name}</div><div class="event-date">${e.date}</div></div>
+        <div class="event-row-left">
+          <div>
+            <div class="event-name">${e.name}</div>
+            <div class="event-date">${e.date}</div>
+          </div>
+          ${soonBadge}
+        </div>
         <div class="toggle${sel ? ' on' : ''}"></div>
       </div>`;
     }
@@ -217,12 +338,22 @@ function renderEvents(selectedIds) {
 }
 
 function showEmailPrompt() {
-  document.getElementById('events-body').innerHTML = `
-    <div class="not-found">
-      <div style="font-size:14px;margin-bottom:1rem;color:#666;">Enter your email address to load your preferences.</div>
-      <input type="email" id="email-input" placeholder="your@email.com" />
-      <button class="btn-save" onclick="loadByEmail()">Load my settings</button>
+  document.getElementById('events-body').closest('.panel-card').style.display = 'none';
+  document.getElementById('btn-save').closest('.save-bar').style.display = 'none';
+
+  const main = document.querySelector('.main');
+  const wrap = document.createElement('div');
+  wrap.className = 'not-found-wrap';
+  wrap.innerHTML = `
+    <div class="not-found-card">
+      <div class="not-found-icon">🔔</div>
+      <div class="not-found-title">Access your alerts</div>
+      <p class="not-found-sub">Enter the email address you signed up with to view and update your event preferences.</p>
+      <input type="email" id="email-input" placeholder="your@email.com" onkeydown="if(event.key==='Enter')loadByEmail()" />
+      <button class="btn-save" style="width:100%" onclick="loadByEmail()">Load my settings</button>
+      <a href="index.html" class="not-found-back">Don't have an account? Sign up free</a>
     </div>`;
+  main.prepend(wrap);
 }
 
 async function loadByEmail() {
