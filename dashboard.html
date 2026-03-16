@@ -11,10 +11,17 @@
     body { font-family: 'DM Sans', sans-serif; color: #1a1a1a; background: #f9f9f7; min-height: 100vh; }
 
     /* Topbar */
-    .topbar { background: #fff; border-bottom: 0.5px solid #e5e5e5; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; height: 56px; position: sticky; top: 0; z-index: 10; }
-    .topbar-logo { font-family: 'DM Serif Display', serif; font-size: 17px; }
-    .topbar-back { font-size: 13px; color: #888; text-decoration: none; }
-    .topbar-back:hover { color: #1a1a1a; }
+    .topbar { background: #fff; border-bottom: 0.5px solid #e5e5e5; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; height: 56px; position: sticky; top: 0; z-index: 10; max-width: 100%; }
+    .topbar-inner { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 1100px; margin: 0 auto; }
+    .topbar-logo { font-family: 'DM Serif Display', serif; font-size: 18px; text-decoration: none; color: #1a1a1a; letter-spacing: -0.3px; }
+    .topbar-links { display: flex; align-items: center; gap: 2rem; }
+    .topbar-link { font-size: 14px; color: #666; text-decoration: none; background: none; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; padding: 0; transition: color 0.15s; }
+    .topbar-link:hover { color: #1a1a1a; }
+    .topbar-link.active { color: #1a1a1a; font-weight: 500; }
+    .topbar-user { font-size: 13px; color: #888; display: flex; align-items: center; gap: 12px; }
+    .topbar-user-name { font-weight: 500; color: #1a1a1a; }
+    .topbar-signout { font-size: 13px; color: #aaa; text-decoration: none; transition: color 0.15s; }
+    .topbar-signout:hover { color: #1a1a1a; }
 
     /* Desktop layout */
     .layout { display: flex; max-width: 1000px; margin: 2rem auto; padding: 0 2rem; gap: 1.5rem; }
@@ -158,8 +165,17 @@
 </head>
 <body>
 <div class="topbar">
-  <div class="topbar-logo">Fluitsignaal</div>
-  <a href="index.html" class="topbar-back">← Back to site</a>
+  <div class="topbar-inner">
+    <a href="index.html" class="topbar-logo">Fluitsignaal</a>
+    <div class="topbar-links">
+      <button class="topbar-link active" id="nav-events" onclick="showPanel('events', this)">My events</button>
+      <button class="topbar-link" id="nav-plan" onclick="showPanel('plan', this)">My plan</button>
+    </div>
+    <div class="topbar-user">
+      <span class="topbar-user-name" id="topbar-user-name"></span>
+      <a href="index.html" class="topbar-signout">← Back to site</a>
+    </div>
+  </div>
 </div>
 
 <!-- Mobile tab bar (hidden on desktop) -->
@@ -299,13 +315,11 @@ function isSoon(dateStr) {
 
 function showPanel(name, el, mobileTabId) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.querySelectorAll('.mobile-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-item, .topbar-link, .mobile-tab').forEach(n => n.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
   if (el) el.classList.add('active');
-  if (mobileTabId) {
-    document.getElementById(mobileTabId)?.classList.add('active');
-  }
+  document.getElementById('nav-' + name)?.classList.add('active');
+  if (mobileTabId) document.getElementById(mobileTabId)?.classList.add('active');
 }
 
 function toggleEvent(row) {
@@ -374,6 +388,7 @@ async function loadUser() {
 
     userPlan = user.plan || 'free';
     document.getElementById('user-name').textContent = user.name || userEmail;
+    document.getElementById('topbar-user-name').textContent = (user.name || userEmail).split(' ')[0];
     document.getElementById('user-plan').textContent = userPlan + ' plan';
     document.getElementById('plan-sub').textContent = 'You are currently on the ' + userPlan + ' plan';
     document.getElementById('plan-card-' + userPlan)?.classList.add('current');
