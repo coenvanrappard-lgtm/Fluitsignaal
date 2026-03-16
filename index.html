@@ -54,14 +54,31 @@
     .plan-features li { font-size: 13px; color: #666; display: flex; gap: 8px; font-weight: 300; }
     .plan-features li::before { content: '—'; color: #ccc; flex-shrink: 0; }
     .signup { padding: 5rem 0 6rem; }
-    .signup-box { border: 0.5px solid #e5e5e5; border-radius: 12px; padding: 3rem; max-width: 560px; }
+    .signup-box { border: 0.5px solid #e5e5e5; border-radius: 12px; padding: 3rem; max-width: 580px; }
     .signup-title { font-family: 'DM Serif Display', serif; font-size: 32px; margin-bottom: 0.75rem; line-height: 1.2; }
     .signup-sub { font-size: 15px; color: #666; margin-bottom: 2rem; font-weight: 300; line-height: 1.6; }
     .signup-form { display: flex; flex-direction: column; gap: 12px; }
-    .signup-form input { padding: 12px 14px; border: 0.5px solid #ccc; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: #1a1a1a; width: 100%; }
+    .signup-form input { padding: 12px 14px; border: 0.5px solid #ccc; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: #1a1a1a; width: 100%; outline: none; transition: border-color 0.15s; }
+    .signup-form input:focus { border-color: #1a1a1a; }
     .signup-form input::placeholder { color: #aaa; }
+    .plan-toggle { display: flex; gap: 8px; }
+    .plan-btn { flex: 1; padding: 10px; border: 0.5px solid #ccc; border-radius: 8px; background: #fff; font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; text-align: center; transition: all 0.15s; }
+    .plan-btn.active { border-color: #1a1a1a; background: #1a1a1a; color: #fff; }
+    .events-section { display: none; flex-direction: column; gap: 12px; padding-top: 4px; }
+    .events-section.visible { display: flex; }
+    .sport-group { border: 0.5px solid #e5e5e5; border-radius: 8px; overflow: hidden; }
+    .sport-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; cursor: pointer; font-size: 13px; font-weight: 500; background: #fafafa; user-select: none; }
+    .sport-header .chevron { font-size: 10px; color: #aaa; transition: transform 0.2s; }
+    .sport-header.open .chevron { transform: rotate(180deg); }
+    .sport-events-list { display: none; padding: 8px 14px 12px; display: flex; flex-wrap: wrap; gap: 8px; }
+    .event-toggle { display: flex; align-items: center; gap: 6px; padding: 6px 12px; border: 0.5px solid #e5e5e5; border-radius: 6px; cursor: pointer; font-size: 12px; color: #555; background: #fff; transition: all 0.15s; user-select: none; }
+    .event-toggle.selected { border-color: #1a1a1a; background: #1a1a1a; color: #fff; }
+    .event-toggle.disabled { opacity: 0.4; cursor: not-allowed; }
+    .event-counter { font-size: 12px; color: #aaa; text-align: right; }
+    .event-counter span { color: #1a1a1a; font-weight: 500; }
     .signup-note { font-size: 12px; color: #aaa; margin-top: 4px; }
     .success-msg { display: none; background: #f0fdf4; border: 0.5px solid #86efac; border-radius: 8px; padding: 1rem; font-size: 14px; color: #166534; }
+    .error-msg { display: none; background: #fef2f2; border: 0.5px solid #fca5a5; border-radius: 8px; padding: 1rem; font-size: 14px; color: #991b1b; }
     .footer { border-top: 0.5px solid #e5e5e5; padding: 2rem 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
     .footer-logo { font-family: 'DM Serif Display', serif; font-size: 16px; }
     .footer-note { font-size: 12px; color: #aaa; }
@@ -130,13 +147,69 @@
   </section>
   <section class="signup" id="signup-form">
     <div class="signup-box">
-      <h2 class="signup-title">Join the waitlist</h2>
-      <p class="signup-sub">We're launching soon. Leave your email and be the first to know — and the first to get tickets.</p>
+      <h2 class="signup-title">Start getting alerts</h2>
+      <p class="signup-sub">Choose your plan, pick your events, and we'll email you the moment tickets go on sale.</p>
       <div class="signup-form">
         <input type="text" id="signup-name" placeholder="Your name" />
         <input type="email" id="signup-email" placeholder="Your email address" />
-        <button class="btn-primary" onclick="handleSignup()">Get early access</button>
-        <div class="success-msg" id="success-msg">You're on the list! We'll be in touch soon.</div>
+        <div class="plan-toggle">
+          <button class="plan-btn active" id="plan-free" onclick="selectPlan('free')">Free — up to 3 events</button>
+          <button class="plan-btn" id="plan-pro" onclick="selectPlan('pro')">Pro — €4/mo, unlimited</button>
+        </div>
+        <div class="events-section visible" id="events-section">
+          <div style="font-size:13px;font-weight:500;color:#1a1a1a;">Choose your events</div>
+          <div class="sport-group">
+            <div class="sport-header open" onclick="toggleSport(this)">Tennis <span class="chevron">▼</span></div>
+            <div class="sport-events-list">
+              <div class="event-toggle" data-id="french_open" onclick="toggleEvent(this)">French Open</div>
+              <div class="event-toggle" data-id="wimbledon" onclick="toggleEvent(this)">Wimbledon</div>
+              <div class="event-toggle" data-id="australian_open" onclick="toggleEvent(this)">Australian Open</div>
+              <div class="event-toggle" data-id="us_open" onclick="toggleEvent(this)">US Open</div>
+              <div class="event-toggle" data-id="rotterdam_open" onclick="toggleEvent(this)">Rotterdam Open</div>
+              <div class="event-toggle" data-id="libema_open" onclick="toggleEvent(this)">Libema Open</div>
+              <div class="event-toggle" data-id="davis_cup" onclick="toggleEvent(this)">Davis Cup</div>
+            </div>
+          </div>
+          <div class="sport-group">
+            <div class="sport-header" onclick="toggleSport(this)">Football <span class="chevron">▼</span></div>
+            <div class="sport-events-list" style="display:none;">
+              <div class="event-toggle" data-id="ajax" onclick="toggleEvent(this)">Ajax</div>
+              <div class="event-toggle" data-id="feyenoord" onclick="toggleEvent(this)">Feyenoord</div>
+              <div class="event-toggle" data-id="psv" onclick="toggleEvent(this)">PSV</div>
+              <div class="event-toggle" data-id="nederlands_elftal" onclick="toggleEvent(this)">Nederlands Elftal</div>
+              <div class="event-toggle" data-id="world_cup" onclick="toggleEvent(this)">WK 2026</div>
+              <div class="event-toggle" data-id="euro" onclick="toggleEvent(this)">EK</div>
+              <div class="event-toggle" data-id="club_world_cup" onclick="toggleEvent(this)">WK Clubs</div>
+            </div>
+          </div>
+          <div class="sport-group">
+            <div class="sport-header" onclick="toggleSport(this)">Golf <span class="chevron">▼</span></div>
+            <div class="sport-events-list" style="display:none;">
+              <div class="event-toggle" data-id="ryder_cup" onclick="toggleEvent(this)">Ryder Cup</div>
+              <div class="event-toggle" data-id="solheim_cup" onclick="toggleEvent(this)">Solheim Cup</div>
+              <div class="event-toggle" data-id="the_open" onclick="toggleEvent(this)">The Open Championship</div>
+              <div class="event-toggle" data-id="klm_open" onclick="toggleEvent(this)">KLM Open</div>
+            </div>
+          </div>
+          <div class="sport-group">
+            <div class="sport-header" onclick="toggleSport(this)">Rugby <span class="chevron">▼</span></div>
+            <div class="sport-events-list" style="display:none;">
+              <div class="event-toggle" data-id="six_nations" onclick="toggleEvent(this)">Six Nations</div>
+            </div>
+          </div>
+          <div class="sport-group">
+            <div class="sport-header" onclick="toggleSport(this)">Hockey <span class="chevron">▼</span></div>
+            <div class="sport-events-list" style="display:none;">
+              <div class="event-toggle" data-id="hockey_ek" onclick="toggleEvent(this)">Hockey EK</div>
+              <div class="event-toggle" data-id="hockey_wk" onclick="toggleEvent(this)">Hockey WK</div>
+              <div class="event-toggle" data-id="hockey_hoofdklasse" onclick="toggleEvent(this)">Hoofdklasse Play-offs</div>
+            </div>
+          </div>
+          <div class="event-counter" id="event-counter" style="display:none;"><span id="event-count">0</span> / 3 events selected</div>
+        </div>
+        <button class="btn-primary" onclick="handleSignup()">Get alerts</button>
+        <div class="success-msg" id="success-msg">You're in! Check your inbox — alerts will start arriving shortly.</div>
+        <div class="error-msg" id="error-msg">Something went wrong. Please try again.</div>
         <p class="signup-note">No spam. Just ticket alerts that actually matter.</p>
       </div>
     </div>
@@ -147,13 +220,72 @@
   </footer>
 </div>
 <script>
-function handleSignup() {
-  const name = document.getElementById('signup-name').value;
-  const email = document.getElementById('signup-email').value;
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzLX4e5FfwzF8R5zwynmkc3a2gBgzENhtkn9tIcLmxjIpeMLYsMDeljXChZQLcGEc4/exec';
+let currentPlan = 'free';
+let selectedEvents = new Set();
+
+function selectPlan(plan) {
+  currentPlan = plan;
+  document.getElementById('plan-free').classList.toggle('active', plan === 'free');
+  document.getElementById('plan-pro').classList.toggle('active', plan === 'pro');
+  const counter = document.getElementById('event-counter');
+  counter.style.display = plan === 'free' ? 'block' : 'none';
+  updateToggles();
+}
+
+function toggleSport(header) {
+  const list = header.nextElementSibling;
+  const isOpen = header.classList.contains('open');
+  header.classList.toggle('open', !isOpen);
+  list.style.display = isOpen ? 'none' : 'flex';
+}
+
+function toggleEvent(el) {
+  if (el.classList.contains('disabled')) return;
+  const id = el.dataset.id;
+  if (selectedEvents.has(id)) {
+    selectedEvents.delete(id);
+    el.classList.remove('selected');
+  } else {
+    selectedEvents.add(id);
+    el.classList.add('selected');
+  }
+  updateToggles();
+}
+
+function updateToggles() {
+  const count = selectedEvents.size;
+  const limit = currentPlan === 'free' ? 3 : Infinity;
+  document.getElementById('event-count').textContent = count;
+  document.querySelectorAll('.event-toggle').forEach(el => {
+    const isSelected = selectedEvents.has(el.dataset.id);
+    el.classList.toggle('disabled', !isSelected && count >= limit);
+  });
+}
+
+async function handleSignup() {
+  const name = document.getElementById('signup-name').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
   if (!name || !email) { alert('Please fill in your name and email.'); return; }
-  document.getElementById('success-msg').style.display = 'block';
-  document.getElementById('signup-name').value = '';
-  document.getElementById('signup-email').value = '';
+  if (selectedEvents.size === 0) { alert('Please select at least one event.'); return; }
+
+  const btn = event.target;
+  btn.textContent = 'Sending…';
+  btn.disabled = true;
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ name, email, plan: currentPlan, events: [...selectedEvents].join('|') })
+    });
+    document.getElementById('success-msg').style.display = 'block';
+    document.getElementById('error-msg').style.display = 'none';
+    btn.style.display = 'none';
+  } catch(e) {
+    document.getElementById('error-msg').style.display = 'block';
+    btn.textContent = 'Get alerts';
+    btn.disabled = false;
+  }
 }
 </script>
 </body>
