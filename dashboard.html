@@ -178,30 +178,34 @@
   <div class="topbar-inner">
     <a href="index.html" class="topbar-logo">Fluitsignaal</a>
     <div class="topbar-links">
-      <button class="topbar-link active" id="nav-events" onclick="showPanel('events', this)">My events</button>
-      <button class="topbar-link" id="nav-notifications" onclick="showPanel('notifications', this)">Notifications</button>
-      <button class="topbar-link" id="nav-plan" onclick="showPanel('plan', this)">My plan</button>
+      <button class="topbar-link active" id="nav-events" onclick="showPanel('events', this)" data-i18n="nav.events">My events</button>
+      <button class="topbar-link" id="nav-notifications" onclick="showPanel('notifications', this)" data-i18n="nav.notifications">Notifications</button>
+      <button class="topbar-link" id="nav-plan" onclick="showPanel('plan', this)" data-i18n="nav.plan">My plan</button>
     </div>
     <div class="topbar-user">
       <span class="topbar-user-name" id="topbar-user-name"></span>
-      <a href="index.html" class="topbar-signout">← Back to site</a>
+      <div style="display:flex;gap:2px;border:0.5px solid #e5e5e5;border-radius:6px;overflow:hidden;margin-right:8px;">
+        <button id="lang-en" onclick="setLang('en')" style="padding:4px 8px;font-size:11px;font-weight:500;border:none;background:transparent;color:#aaa;cursor:pointer;font-family:'DM Sans',sans-serif;">EN</button>
+        <button id="lang-nl" onclick="setLang('nl')" style="padding:4px 8px;font-size:11px;font-weight:500;border:none;background:#1a1a1a;color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;">NL</button>
+      </div>
+      <a href="index.html" class="topbar-signout" data-i18n="nav.back">← Back to site</a>
     </div>
   </div>
 </div>
 
 <!-- Mobile tab bar (hidden on desktop) -->
 <div class="mobile-tabs">
-  <button class="mobile-tab active" id="mobile-tab-events" onclick="showPanel('events', this, 'mobile-tab-events')">My events</button>
-  <button class="mobile-tab" id="mobile-tab-notifications" onclick="showPanel('notifications', this, 'mobile-tab-notifications')">Notifications</button>
-  <button class="mobile-tab" id="mobile-tab-plan" onclick="showPanel('plan', this, 'mobile-tab-plan')">My plan</button>
+  <button class="mobile-tab active" id="mobile-tab-events" onclick="showPanel('events', this, 'mobile-tab-events')" data-i18n="nav.events">My events</button>
+  <button class="mobile-tab" id="mobile-tab-notifications" onclick="showPanel('notifications', this, 'mobile-tab-notifications')" data-i18n="nav.notifications">Notifications</button>
+  <button class="mobile-tab" id="mobile-tab-plan" onclick="showPanel('plan', this, 'mobile-tab-plan')" data-i18n="nav.plan">My plan</button>
 </div>
 
 <div class="layout">
   <div class="sidebar">
     <div class="sidebar-card">
-      <div class="nav-item active" onclick="showPanel('events', this)">🗓 My events</div>
-      <div class="nav-item" onclick="showPanel('notifications', this)">🔔 Notifications</div>
-      <div class="nav-item" onclick="showPanel('plan', this)">💳 My plan</div>
+      <div class="nav-item active" onclick="showPanel('events', this)">🗓 <span data-i18n="nav.events">My events</span></div>
+      <div class="nav-item" onclick="showPanel('notifications', this)">🔔 <span data-i18n="nav.notifications">Notifications</span></div>
+      <div class="nav-item" onclick="showPanel('plan', this)">💳 <span data-i18n="nav.plan">My plan</span></div>
     </div>
     <div class="sidebar-user">
       <div class="user-name" id="user-name">—</div>
@@ -213,15 +217,15 @@
     <div class="panel active" id="panel-events">
       <div class="panel-card">
         <div class="panel-header">
-          <div class="panel-title">My events</div>
-          <div class="panel-sub">Toggle the events you want to receive ticket alerts for</div>
+          <div class="panel-title" data-i18n="panel.events.title">My events</div>
+          <div class="panel-sub" data-i18n="panel.events.sub">Toggle the events you want to receive ticket alerts for</div>
         </div>
         <div class="panel-body" id="events-body">
-          <div class="loading">Loading your preferences…</div>
+          <div class="loading" data-i18n="loading">Loading your preferences…</div>
         </div>
         <div class="save-bar">
-          <div class="save-status" id="save-status">Saved!</div>
-          <button class="btn-save" id="btn-save" onclick="savePreferences()">Save preferences</button>
+          <div class="save-status" id="save-status" data-i18n="saved">Saved!</div>
+          <button class="btn-save" id="btn-save" onclick="savePreferences()" data-i18n="save.btn">Save preferences</button>
         </div>
       </div>
     </div>
@@ -229,27 +233,27 @@
     <div class="panel" id="panel-notifications">
       <div class="panel-card">
         <div class="panel-header">
-          <div class="panel-title">Notifications</div>
-          <div class="panel-sub">Choose how and when you want to be notified</div>
+          <div class="panel-title" data-i18n="nav.notifications">Notifications</div>
+          <div class="panel-sub" data-i18n="panel.notif.sub">Choose how and when you want to be notified</div>
         </div>
         <div class="panel-body">
           <table class="ncg">
             <thead class="ncg-header"><tr>
-              <th></th><th>Email</th><th>SMS</th>
+              <th></th><th data-i18n="notif.email">Email</th><th>SMS</th>
             </tr></thead>
             <tbody>
               <tr class="ncg-row">
-                <td><div class="ncg-name">Weekly digest</div><div class="ncg-hint">Every Monday — full overview of upcoming sales</div></td>
+                <td><div class="ncg-name" data-i18n="reminder.weekly.label">Weekly digest</div><div class="ncg-hint" data-i18n="reminder.weekly.desc">Every Monday — full overview of upcoming sales</div></td>
                 <td class="ncg-cell"><div class="toggle" id="rt-weekly-email" onclick="toggleRt('weekly-email')"></div></td>
                 <td class="ncg-cell"><div class="toggle" id="rt-weekly-sms" onclick="toggleRt('weekly-sms')"></div></td>
               </tr>
               <tr class="ncg-row">
-                <td><div class="ncg-name">Day before</div><div class="ncg-hint">Alert the day before a sale opens</div></td>
+                <td><div class="ncg-name" data-i18n="reminder.day.label">Day before</div><div class="ncg-hint" data-i18n="reminder.day.desc">Alert the day before a sale opens</div></td>
                 <td class="ncg-cell"><div class="toggle" id="rt-day-before-email" onclick="toggleRt('day-before-email')"></div></td>
                 <td class="ncg-cell"><div class="toggle" id="rt-day-before-sms" onclick="toggleRt('day-before-sms')"></div></td>
               </tr>
               <tr class="ncg-row">
-                <td><div class="ncg-name">1 hour before</div><div class="ncg-hint">Alert 1 hour before the sale goes live</div></td>
+                <td><div class="ncg-name" data-i18n="reminder.hour.label">1 hour before</div><div class="ncg-hint" data-i18n="reminder.hour.desc">Alert 1 hour before the sale goes live</div></td>
                 <td class="ncg-cell"><div class="toggle" id="rt-hour-before-email" onclick="toggleRt('hour-before-email')"></div></td>
                 <td class="ncg-cell"><div class="toggle" id="rt-hour-before-sms" onclick="toggleRt('hour-before-sms')"></div></td>
               </tr>
@@ -257,8 +261,8 @@
           </table>
         </div>
         <div class="save-bar">
-          <div class="save-status" id="notif-save-status">Saved!</div>
-          <button class="btn-save" id="btn-save-notif" onclick="saveNotifications()">Save preferences</button>
+          <div class="save-status" id="notif-save-status" data-i18n="saved">Saved!</div>
+          <button class="btn-save" id="btn-save-notif" onclick="saveNotifications()" data-i18n="save.btn">Save preferences</button>
         </div>
       </div>
     </div>
@@ -266,28 +270,28 @@
     <div class="panel" id="panel-plan">
       <div class="panel-card">
         <div class="panel-header">
-          <div class="panel-title">My plan</div>
+          <div class="panel-title" data-i18n="nav.plan">My plan</div>
           <div class="panel-sub" id="plan-sub">—</div>
         </div>
         <div class="panel-body">
           <div class="plan-grid">
             <div class="plan-card" id="plan-card-free">
-              <div class="plan-card-name">Free</div>
+              <div class="plan-card-name" data-i18n="plan.free.name">Free</div>
               <div class="plan-card-price">€0</div>
-              <div class="plan-card-period">forever</div>
-              <ul class="plan-card-features"><li>Up to 4 events</li><li>Email alerts</li><li>Weekly digest</li></ul>
+              <div class="plan-card-period" data-i18n="plan.free.period">forever</div>
+              <ul class="plan-card-features"><li data-i18n="plan.free.f1">Up to 4 events</li><li data-i18n="plan.free.f2">Email alerts</li><li data-i18n="plan.free.f3">Day-before reminders</li></ul>
             </div>
             <div class="plan-card" id="plan-card-pro">
-              <div class="plan-card-name">Pro</div>
+              <div class="plan-card-name" data-i18n="plan.pro.name">Pro</div>
               <div class="plan-card-price">€7</div>
-              <div class="plan-card-period">per month</div>
-              <ul class="plan-card-features"><li>Unlimited events</li><li>Email + SMS alerts</li><li>All reminder types</li><li>Lottery reminders</li></ul>
+              <div class="plan-card-period" data-i18n="plan.pro.period">per month</div>
+              <ul class="plan-card-features"><li data-i18n="plan.pro.f1">Unlimited events</li><li data-i18n="plan.pro.f2">Email + SMS alerts</li><li data-i18n="plan.pro.f3">All reminder types</li><li data-i18n="plan.pro.f4">Lottery registration reminders</li></ul>
             </div>
             <div class="plan-card" id="plan-card-team">
-              <div class="plan-card-name">Team</div>
+              <div class="plan-card-name" data-i18n="plan.team.name">Team</div>
               <div class="plan-card-price">€19</div>
-              <div class="plan-card-period">per month · 5 people</div>
-              <ul class="plan-card-features"><li>Everything in Pro</li><li>Shared event lists</li><li>Priority support</li></ul>
+              <div class="plan-card-period" data-i18n="plan.team.period">per month, up to 5 people</div>
+              <ul class="plan-card-features"><li data-i18n="plan.team.f1">Everything in Pro</li><li data-i18n="plan.team.f2">Shared event lists</li><li data-i18n="plan.team.f3">Priority support</li></ul>
             </div>
           </div>
         </div>
@@ -597,6 +601,105 @@ async function startCheckout() {
     btn.disabled = false;
   }
 }
+
+// ── i18n ──────────────────────────────────────────────────────────────────
+const TRANSLATIONS = {
+  en: {
+    'nav.events': 'My events',
+    'nav.notifications': 'Notifications',
+    'nav.plan': 'My plan',
+    'nav.back': '← Back to site',
+    'panel.events.title': 'My events',
+    'panel.events.sub': 'Toggle the events you want to receive ticket alerts for',
+    'loading': 'Loading your preferences…',
+    'saved': 'Saved!',
+    'save.btn': 'Save preferences',
+    'panel.notif.sub': 'Choose how and when you want to be notified',
+    'notif.email': 'Email',
+    'reminder.weekly.label': 'Weekly digest',
+    'reminder.weekly.desc': 'Every Monday — full overview of upcoming sales',
+    'reminder.day.label': 'Day before',
+    'reminder.day.desc': 'Alert the day before a sale opens',
+    'reminder.hour.label': '1 hour before',
+    'reminder.hour.desc': 'Alert 1 hour before the sale goes live',
+    'plan.free.name': 'Free',
+    'plan.free.period': 'forever',
+    'plan.free.f1': 'Up to 4 events',
+    'plan.free.f2': 'Email alerts',
+    'plan.free.f3': 'Day-before reminders',
+    'plan.pro.name': 'Pro',
+    'plan.pro.period': 'per month',
+    'plan.pro.f1': 'Unlimited events',
+    'plan.pro.f2': 'Email + SMS alerts',
+    'plan.pro.f3': 'All reminder types',
+    'plan.pro.f4': 'Lottery registration reminders',
+    'plan.team.name': 'Team',
+    'plan.team.period': 'per month, up to 5 people',
+    'plan.team.f1': 'Everything in Pro',
+    'plan.team.f2': 'Shared event lists',
+    'plan.team.f3': 'Priority support',
+    'signout': 'Sign out',
+  },
+  nl: {
+    'nav.events': 'Mijn events',
+    'nav.notifications': 'Meldingen',
+    'nav.plan': 'Mijn abonnement',
+    'nav.back': '← Terug naar site',
+    'panel.events.title': 'Mijn events',
+    'panel.events.sub': 'Zet events aan waarvoor je ticketalerts wilt ontvangen',
+    'loading': 'Voorkeuren laden…',
+    'saved': 'Opgeslagen!',
+    'save.btn': 'Opslaan',
+    'panel.notif.sub': 'Kies hoe en wanneer je een melding wilt ontvangen',
+    'notif.email': 'E-mail',
+    'reminder.weekly.label': 'Wekelijkse samenvatting',
+    'reminder.weekly.desc': 'Elke maandag — volledig overzicht van aankomende verkopen',
+    'reminder.day.label': 'Dag van tevoren',
+    'reminder.day.desc': 'Melding de dag voordat een verkoop opent',
+    'reminder.hour.label': '1 uur van tevoren',
+    'reminder.hour.desc': 'Melding 1 uur voor de verkoop begint',
+    'plan.free.name': 'Gratis',
+    'plan.free.period': 'voor altijd',
+    'plan.free.f1': 'Tot 4 events',
+    'plan.free.f2': 'E-mailmeldingen',
+    'plan.free.f3': 'Herinnering de dag ervoor',
+    'plan.pro.name': 'Pro',
+    'plan.pro.period': 'per maand',
+    'plan.pro.f1': 'Onbeperkte events',
+    'plan.pro.f2': 'E-mail + SMS-meldingen',
+    'plan.pro.f3': 'Alle herinneringstypes',
+    'plan.pro.f4': 'Loterij-registratieherinneringen',
+    'plan.team.name': 'Team',
+    'plan.team.period': 'per maand, tot 5 personen',
+    'plan.team.f1': 'Alles van Pro',
+    'plan.team.f2': 'Gedeelde eventlijsten',
+    'plan.team.f3': 'Prioriteitsondersteuning',
+    'signout': 'Uitloggen',
+  }
+};
+
+let currentLang = localStorage.getItem('lang') || 'nl';
+
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('lang', lang);
+  document.documentElement.lang = lang;
+  const t = TRANSLATIONS[lang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    if (t[el.dataset.i18n] !== undefined) el.textContent = t[el.dataset.i18n];
+  });
+  // Update lang button styles
+  const enBtn = document.getElementById('lang-en');
+  const nlBtn = document.getElementById('lang-nl');
+  if (enBtn && nlBtn) {
+    enBtn.style.background = lang === 'en' ? '#1a1a1a' : 'transparent';
+    enBtn.style.color = lang === 'en' ? '#fff' : '#aaa';
+    nlBtn.style.background = lang === 'nl' ? '#1a1a1a' : 'transparent';
+    nlBtn.style.color = lang === 'nl' ? '#fff' : '#aaa';
+  }
+}
+
+setLang(currentLang);
 
 loadUser();
 </script>

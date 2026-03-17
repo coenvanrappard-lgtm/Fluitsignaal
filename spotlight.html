@@ -66,6 +66,10 @@
       <a href="index.html" class="topbar-link">Aanmelden</a>
       <a href="spotlight.html" class="topbar-link active">Spotlight</a>
       <a href="dashboard.html" class="topbar-link">Mijn account</a>
+      <span style="display:flex;gap:2px;margin-left:0.5rem;">
+        <button id="lang-en" onclick="setLang('en')" style="padding:4px 8px;font-size:11px;font-weight:500;border:none;background:transparent;color:#aaa;cursor:pointer;font-family:'DM Sans',sans-serif;">EN</button>
+        <button id="lang-nl" onclick="setLang('nl')" style="padding:4px 8px;font-size:11px;font-weight:500;border:none;background:#1a1a1a;color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;">NL</button>
+      </span>
     </div>
   </div>
 </div>
@@ -281,5 +285,21 @@
   <a href="index.html">Fluitsignaal</a> &nbsp;·&nbsp; <a href="spotlight.html">Spotlight</a> &nbsp;·&nbsp; <a href="dashboard.html">Mijn account</a>
 </div>
 
+<script>
+let currentLang = localStorage.getItem('lang') || 'nl';
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('lang', lang);
+  const enBtn = document.getElementById('lang-en');
+  const nlBtn = document.getElementById('lang-nl');
+  if (enBtn && nlBtn) {
+    enBtn.style.background = lang === 'en' ? '#1a1a1a' : 'transparent';
+    enBtn.style.color = lang === 'en' ? '#fff' : '#aaa';
+    nlBtn.style.background = lang === 'nl' ? '#1a1a1a' : 'transparent';
+    nlBtn.style.color = lang === 'nl' ? '#fff' : '#aaa';
+  }
+}
+setLang(currentLang);
+</script>
 </body>
 </html>
