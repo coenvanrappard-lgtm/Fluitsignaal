@@ -473,23 +473,29 @@ function renderEvents(selectedIds) {
   body.innerHTML = html;
 }
 
-function showEmailPrompt() {
-  document.getElementById('events-body').closest('.panel-card').style.display = 'none';
-  document.getElementById('btn-save').closest('.save-bar').style.display = 'none';
+function hideAllPanels() {
+  document.querySelector('.layout').style.display = 'none';
+  document.querySelector('.mobile-tabs').style.display = 'none';
+  const navLinks = document.querySelector('.topbar-links');
+  if (navLinks) navLinks.style.display = 'none';
+}
 
-  const main = document.querySelector('.main');
+function showEmailPrompt(errorMsg) {
+  document.querySelectorAll('.not-found-wrap').forEach(el => el.remove());
+  hideAllPanels();
+  const body = document.body;
   const wrap = document.createElement('div');
   wrap.className = 'not-found-wrap';
   wrap.innerHTML = `
     <div class="not-found-card">
       <div class="not-found-icon">🔔</div>
       <div class="not-found-title">Toegang tot je meldingen</div>
-      <p class="not-found-sub">Voer je e-mailadres in om je evenementen en voorkeuren te bekijken.</p>
+      <p class="not-found-sub">${errorMsg || 'Voer je e-mailadres in om je evenementen en voorkeuren te bekijken.'}</p>
       <input type="email" id="email-input" placeholder="jouw@email.com" onkeydown="if(event.key==='Enter')loadByEmail()" />
-      <button class="btn-save" style="width:100%" onclick="loadByEmail()">Mijn instellingen laden</button>
+      <button class="btn-save" style="width:100%;margin-top:4px;" onclick="loadByEmail()">Mijn instellingen laden</button>
       <a href="index.html" class="not-found-back">Nog geen account? Gratis aanmelden</a>
     </div>`;
-  main.prepend(wrap);
+  body.appendChild(wrap);
 }
 
 async function loadByEmail() {
@@ -504,11 +510,16 @@ async function loadUser() {
   if (!userEmail) { showEmailPrompt(); return; }
 
   try {
-    const res = await fetch(SCRIPT_URL + '?email=' + encodeURIComponent(userEmail));
-    const data = await res.json();
-    if (!data.found || data.error) { showEmailPrompt(); return; }
-    const user = data.user;
+    const res = await fetch(SCRIPT_URL + '?email=' + encodeURIComponent(userEmail), { credentials: 'omit' });
+    const text = await res.text();
+    const data = JSON.parse(text);
 
+    if (!data.found) {
+      showEmailPrompt('Dit e-mailadres is niet gevonden. Controleer je adres of meld je aan.');
+      return;
+    }
+
+    const user = data.user;
     userPlan = user.plan || 'free';
     document.getElementById('user-name').textContent = user.name || userEmail;
     document.getElementById('topbar-user-name').textContent = (user.name || userEmail).split(' ')[0];
@@ -522,19 +533,17 @@ async function loadUser() {
       document.getElementById('pro-wrap').style.display = 'block';
       document.getElementById('btn-contact-plan').style.display = 'none';
     }
-    const params = new URLSearchParams(window.location.search);
     if (params.get('upgraded') === '1') {
-      document.getElementById('plan-sub').textContent = 'Welcome to Pro! Your plan has been upgraded.';
+      document.getElementById('plan-sub').textContent = 'Welkom bij Pro! Je abonnement is geüpgraded.';
       showPanel('plan', document.getElementById('nav-plan'));
     }
-
     const selected = user.events ? user.events.split('|').filter(Boolean) : [];
     renderEvents(selected);
     const reminders = user.reminders ? user.reminders.split('|').filter(Boolean) : ['weekly','day_before'];
     renderNotifications(user.notifications || 'email', reminders);
   } catch(e) {
-    console.error(e);
-    showEmailPrompt();
+    console.error('loadUser error:', e);
+    showEmailPrompt('Er is een fout opgetreden. Probeer het opnieuw.');
   }
 }
 
