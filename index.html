@@ -331,7 +331,7 @@
         <div class="plan-name">Free</div>
         <div class="plan-price">€0</div>
         <div class="plan-period">forever</div>
-        <ul class="plan-features"><li>Up to 3 events</li><li>Email alerts</li><li>Day-before reminders</li></ul>
+        <ul class="plan-features"><li>Up to 4 events</li><li>Email alerts</li><li>Day-before reminders</li></ul>
       </div>
       <div class="plan featured">
         <div class="plan-badge">Most popular</div>
@@ -365,7 +365,7 @@
         <input type="email" id="signup-email" placeholder="Your email address" />
         <input type="tel" id="signup-phone" placeholder="Your phone number (e.g. +31612345678)" style="display:none;" />
         <div class="plan-toggle">
-          <button class="plan-btn active" id="plan-free" onclick="selectPlan('free')">Free — up to 3 events</button>
+          <button class="plan-btn active" id="plan-free" onclick="selectPlan('free')">Free — up to 4 events</button>
           <button class="plan-btn" id="plan-pro" onclick="selectPlan('pro')">Pro — €4/mo, unlimited</button>
         </div>
         <div class="reminders-section">
@@ -443,7 +443,7 @@
               <div class="event-toggle" data-id="hockey_hoofdklasse" onclick="toggleEvent(this)">Hoofdklasse Play-offs</div>
             </div>
           </div>
-          <div class="event-counter" id="event-counter" style="display:none;"><span id="event-count">0</span> / 3 events selected</div>
+          <div class="event-counter" id="event-counter" style="display:none;"><span id="event-count">0</span> / 4 events selected</div>
         </div>
         <button class="btn-primary" onclick="handleSignup()">Get alerts</button>
         <div class="success-msg" id="success-msg">You're in! Check your inbox — alerts will start arriving shortly.</div>
@@ -529,7 +529,7 @@ function toggleEvent(el) {
 }
 function updateToggles() {
   const count = selectedEvents.size;
-  const limit = currentPlan === 'free' ? 3 : Infinity;
+  const limit = currentPlan === 'free' ? 4 : Infinity;
   document.getElementById('event-count').textContent = count;
   document.querySelectorAll('.event-toggle').forEach(el => {
     el.classList.toggle('disabled', !selectedEvents.has(el.dataset.id) && count >= limit);
