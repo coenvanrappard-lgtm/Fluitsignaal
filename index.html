@@ -96,7 +96,12 @@
     .account-modal-close:hover { color: var(--body); }
 
     /* Hero */
-    .hero-wrap { background: var(--dark); padding: 5.5rem 0 4.5rem; margin-bottom: 0; }
+    .hero-wrap {
+      background: linear-gradient(to bottom, rgba(13,17,23,0.72) 0%, rgba(13,17,23,0.93) 100%),
+                  url('https://upload.wikimedia.org/wikipedia/commons/8/8f/Incheon_Soccer_Stadium_2.JPG') center/cover no-repeat;
+      padding: 5.5rem 0 4.5rem;
+      margin-bottom: 0;
+    }
     .hero { max-width: 760px; }
     .hero-eyebrow {
       display: inline-flex; align-items: center; gap: 8px;
@@ -143,15 +148,13 @@
     .sports { padding: 5.5rem 0; background: var(--bg); margin: 0 -2rem; padding-left: 2rem; padding-right: 2rem; }
     .sports-inner { max-width: 1100px; margin: 0 auto; }
     .sports-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-top: 3rem; }
-    .sport-card { border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem 1.25rem; background: var(--white); border-top: 3px solid var(--border); transition: transform 0.15s, box-shadow 0.15s; }
-    .sport-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.07); }
-    .sport-card.tennis { border-top-color: var(--tennis); }
-    .sport-card.football { border-top-color: var(--football); }
-    .sport-card.golf { border-top-color: var(--golf); }
-    .sport-card.rugby { border-top-color: var(--rugby); }
-    .sport-card.hockey { border-top-color: var(--hockey); }
-    .sport-icon { font-size: 26px; margin-bottom: 0.75rem; }
-    .sport-name { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+    .sport-card { border: 1px solid var(--border); border-radius: 14px; overflow: hidden; background: var(--white); transition: transform 0.15s, box-shadow 0.15s; }
+    .sport-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+    .sport-img { height: 130px; background-size: cover; background-position: center; position: relative; }
+    .sport-img::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.45) 100%); }
+    .sport-img-label { position: absolute; bottom: 10px; left: 12px; font-size: 15px; font-weight: 700; color: #fff; z-index: 1; letter-spacing: -0.2px; text-shadow: 0 1px 4px rgba(0,0,0,0.5); }
+    .sport-card-body { padding: 1rem 1.25rem 1.25rem; }
+    .sport-name { font-size: 14px; font-weight: 600; margin-bottom: 8px; display: none; }
     .sport-events { font-size: 12px; color: var(--muted); line-height: 1.8; font-weight: 300; }
 
     /* Pricing */
@@ -315,11 +318,36 @@
   <div class="sports-inner">
     <p class="section-label">Events we cover</p>
     <div class="sports-grid">
-      <div class="sport-card tennis"><div class="sport-icon">🎾</div><div class="sport-name">Tennis</div><div class="sport-events">French Open · Wimbledon · Australian Open · US Open · Rotterdam Open · Libema Open · Davis Cup</div></div>
-      <div class="sport-card football"><div class="sport-icon">⚽</div><div class="sport-name">Football</div><div class="sport-events">Ajax · Feyenoord · PSV · Nederlands Elftal · EK · WK · WK Clubs</div></div>
-      <div class="sport-card golf"><div class="sport-icon">⛳</div><div class="sport-name">Golf</div><div class="sport-events">Ryder Cup · Solheim Cup · The Open Championship · KLM Open</div></div>
-      <div class="sport-card rugby"><div class="sport-icon">🏉</div><div class="sport-name">Rugby</div><div class="sport-events">Six Nations</div></div>
-      <div class="sport-card hockey"><div class="sport-icon">🏑</div><div class="sport-name">Hockey</div><div class="sport-events">EK · WK · Hoofdklasse Play-offs</div></div>
+      <div class="sport-card tennis">
+        <div class="sport-img" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/a/af/Wimbledon_court_No._1.JPG')">
+          <div class="sport-img-label">Tennis</div>
+        </div>
+        <div class="sport-card-body"><div class="sport-events">French Open · Wimbledon · Rotterdam Open · Libema Open · Davis Cup</div></div>
+      </div>
+      <div class="sport-card football">
+        <div class="sport-img" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/5/5a/Olympic_Stadium_Soccer.JPG')">
+          <div class="sport-img-label">Football</div>
+        </div>
+        <div class="sport-card-body"><div class="sport-events">Ajax · Feyenoord · PSV · Nederlands Elftal · EK · WK · WK Clubs</div></div>
+      </div>
+      <div class="sport-card golf">
+        <div class="sport-img" style="background-image:url('https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?w=800&q=80')">
+          <div class="sport-img-label">Golf</div>
+        </div>
+        <div class="sport-card-body"><div class="sport-events">Ryder Cup · Solheim Cup · The Open Championship · KLM Open</div></div>
+      </div>
+      <div class="sport-card rugby">
+        <div class="sport-img" style="background-image:url('https://images.unsplash.com/photo-1599474924187-334a4ae5bd3c?w=800&q=80')">
+          <div class="sport-img-label">Rugby</div>
+        </div>
+        <div class="sport-card-body"><div class="sport-events">Six Nations</div></div>
+      </div>
+      <div class="sport-card hockey">
+        <div class="sport-img" style="background-image:url('https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=80')">
+          <div class="sport-img-label">Hockey</div>
+        </div>
+        <div class="sport-card-body"><div class="sport-events">EK · WK · Hoofdklasse Play-offs</div></div>
+      </div>
     </div>
   </div>
 </section>
@@ -331,8 +359,8 @@
       <div class="plan">
         <div class="plan-name">Free</div>
         <div class="plan-price">€0</div>
-        <div class="plan-period">forever</div>
-        <ul class="plan-features"><li>Up to 8 events</li><li>Email alerts</li><li>Day-before reminders</li></ul>
+        <div class="plan-period">free to use</div>
+        <ul class="plan-features"><li>Weekly digest — all events</li><li>Email alerts</li><li>Day-before &amp; hour reminders</li></ul>
       </div>
       <div class="plan featured">
         <div class="plan-badge">Most popular</div>
@@ -366,19 +394,12 @@
         <input type="email" id="signup-email" placeholder="Your email address" />
         <input type="tel" id="signup-phone" placeholder="Your phone number (e.g. +31612345678)" style="display:none;" />
         <div class="plan-toggle">
-          <button class="plan-btn active" id="plan-free" onclick="selectPlan('free')">Free — up to 8 events</button>
+          <button class="plan-btn active" id="plan-free" onclick="selectPlan('free')">Free</button>
           <button class="plan-btn" id="plan-pro" onclick="selectPlan('pro')">Pro — €7/mo, unlimited</button>
         </div>
         <div class="reminders-section">
-          <div style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.8);margin-bottom:8px;">Choose your reminders</div>
+          <div style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.8);margin-bottom:8px;">Choose your alerts</div>
           <div class="reminder-options">
-            <label class="reminder-opt">
-              <input type="checkbox" id="reminder-weekly" checked />
-              <span class="reminder-box">
-                <span class="reminder-label">Weekly digest</span>
-                <span class="reminder-desc">Every Monday — full overview of upcoming sales</span>
-              </span>
-            </label>
             <label class="reminder-opt">
               <input type="checkbox" id="reminder-day-before" checked />
               <span class="reminder-box">
@@ -396,14 +417,13 @@
           </div>
         </div>
         <div class="events-section visible" id="events-section">
-          <div style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.8);">Choose your events</div>
+          <div style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.8);">Choose your alert events</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:-6px;margin-bottom:4px;">Select the events you want day-before and hour-of alerts for. The weekly digest covers all events automatically.</div>
           <div class="sport-group">
             <div class="sport-header open" onclick="toggleSport(this)">Tennis <span class="chevron">▼</span></div>
             <div class="sport-events-list">
               <div class="event-toggle" data-id="french_open" onclick="toggleEvent(this)">French Open</div>
               <div class="event-toggle" data-id="wimbledon" onclick="toggleEvent(this)">Wimbledon</div>
-              <div class="event-toggle" data-id="australian_open" onclick="toggleEvent(this)">Australian Open</div>
-              <div class="event-toggle" data-id="us_open" onclick="toggleEvent(this)">US Open</div>
               <div class="event-toggle" data-id="rotterdam_open" onclick="toggleEvent(this)">Rotterdam Open</div>
               <div class="event-toggle" data-id="libema_open" onclick="toggleEvent(this)">Libema Open</div>
               <div class="event-toggle" data-id="davis_cup" onclick="toggleEvent(this)">Davis Cup</div>
@@ -457,11 +477,10 @@
               <div class="event-toggle" data-id="world_sprint_championships" onclick="toggleEvent(this)">WK Sprint Schaatsen</div>
               <div class="event-toggle" data-id="jumping_amsterdam" onclick="toggleEvent(this)">Jumping Amsterdam</div>
               <div class="event-toggle" data-id="hollands_strongest_man" onclick="toggleEvent(this)">Holland's Strongest Man</div>
-              <div class="event-toggle" data-id="beachvolleybal_eredivisie" onclick="toggleEvent(this)">Beachvolleybal Eredivisie</div>
               <div class="event-toggle" data-id="beachlife_volleyball_scheveningen" onclick="toggleEvent(this)">Summer BeachLife Volleyball</div>
             </div>
           </div>
-          <div class="event-counter" id="event-counter" style="display:none;"><span id="event-count">0</span><span id="event-counter-suffix"> / 8 events selected</span></div>
+          <div class="event-counter" id="event-counter" style="display:none;"><span id="event-count">0</span><span id="event-counter-suffix"> events selected for alerts</span></div>
         </div>
         <button class="btn-primary" onclick="handleSignup()">Get alerts</button>
         <div class="success-msg" id="success-msg">You're in! Check your inbox — alerts will start arriving shortly.</div>
@@ -498,7 +517,7 @@
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwXE6ADpakhn2sQez_fjbSEP-PktBxvmvafaK3GWJmQClV2BFHYTC7zpgZuJ9ieKvdp/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzMiPVhjHwL8p675W4XzwvKje6CbqKPFJK6Lx7L8WLNBapQMNO3usPGmAvbC_1vkQ4/exec';
 let currentPlan = 'free';
 let currentNotif = 'email';
 let selectedEvents = new Set();
@@ -530,7 +549,7 @@ function selectPlan(plan) {
   currentPlan = plan;
   document.getElementById('plan-free').classList.toggle('active', plan === 'free');
   document.getElementById('plan-pro').classList.toggle('active', plan === 'pro');
-  document.getElementById('event-counter').style.display = plan === 'free' ? 'block' : 'none';
+  document.getElementById('event-counter').style.display = 'block';
   updateToggles();
 }
 function toggleSport(header) {
@@ -548,10 +567,9 @@ function toggleEvent(el) {
 }
 function updateToggles() {
   const count = selectedEvents.size;
-  const limit = currentPlan === 'free' ? 8 : Infinity;
   document.getElementById('event-count').textContent = count;
   document.querySelectorAll('.event-toggle').forEach(el => {
-    el.classList.toggle('disabled', !selectedEvents.has(el.dataset.id) && count >= limit);
+    el.classList.remove('disabled');
   });
 }
 async function handleSignup() {
@@ -565,7 +583,7 @@ async function handleSignup() {
   const btn = event.target;
   btn.textContent = 'Sending…';
   btn.disabled = true;
-  const reminders = ['weekly','day_before','hour_before'].filter(r => document.getElementById('reminder-'+r.replace('_','-')).checked).join('|');
+  const reminders = ['day_before','hour_before'].filter(r => document.getElementById('reminder-'+r.replace('_','-')).checked).join('|');
   try {
     await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ name, email, phone, plan: currentPlan, events: [...selectedEvents].join('|'), notifications: currentNotif, reminders }) });
     document.getElementById('success-msg').style.display = 'block';

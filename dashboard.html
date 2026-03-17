@@ -214,7 +214,7 @@
       <div class="panel-card">
         <div class="panel-header">
           <div class="panel-title">My events</div>
-          <div class="panel-sub">Toggle the events you want to receive ticket alerts for</div>
+          <div class="panel-sub">Select which events you want day-before and hour-of ticket alerts for. The weekly digest covers all events automatically.</div>
         </div>
         <div class="panel-body" id="events-body">
           <div class="loading">Loading your preferences…</div>
@@ -238,11 +238,6 @@
               <th></th><th>Email</th><th>SMS</th>
             </tr></thead>
             <tbody>
-              <tr class="ncg-row">
-                <td><div class="ncg-name">Weekly digest</div><div class="ncg-hint">Every Monday — full overview of upcoming sales</div></td>
-                <td class="ncg-cell"><div class="toggle" id="rt-weekly-email" onclick="toggleRt('weekly-email')"></div></td>
-                <td class="ncg-cell"><div class="toggle" id="rt-weekly-sms" onclick="toggleRt('weekly-sms')"></div></td>
-              </tr>
               <tr class="ncg-row">
                 <td><div class="ncg-name">Day before</div><div class="ncg-hint">Alert the day before a sale opens</div></td>
                 <td class="ncg-cell"><div class="toggle" id="rt-day-before-email" onclick="toggleRt('day-before-email')"></div></td>
@@ -274,8 +269,8 @@
             <div class="plan-card" id="plan-card-free">
               <div class="plan-card-name">Free</div>
               <div class="plan-card-price">€0</div>
-              <div class="plan-card-period">forever</div>
-              <ul class="plan-card-features"><li>Up to 8 events</li><li>Email alerts</li><li>Day-before reminders</li></ul>
+              <div class="plan-card-period">free to use</div>
+              <ul class="plan-card-features"><li>Weekly digest — all events</li><li>Email alerts</li><li>Day-before &amp; hour reminders</li></ul>
             </div>
             <div class="plan-card" id="plan-card-pro">
               <div class="plan-card-name">Pro</div>
@@ -306,7 +301,7 @@
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwXE6ADpakhn2sQez_fjbSEP-PktBxvmvafaK3GWJmQClV2BFHYTC7zpgZuJ9ieKvdp/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzMiPVhjHwL8p675W4XzwvKje6CbqKPFJK6Lx7L8WLNBapQMNO3usPGmAvbC_1vkQ4/exec';
 
 const EVENTS = {
   tennis: {
@@ -379,8 +374,6 @@ let userEmail = null;
 let userPlan = 'free';
 
 const REMINDER_MAP = [
-  { id: 'weekly-email',      dbKey: 'weekly_email',      type: 'weekly',      channel: 'email' },
-  { id: 'weekly-sms',        dbKey: 'weekly_sms',        type: 'weekly',      channel: 'sms'   },
   { id: 'day-before-email',  dbKey: 'day_before_email',  type: 'day_before',  channel: 'email' },
   { id: 'day-before-sms',    dbKey: 'day_before_sms',    type: 'day_before',  channel: 'sms'   },
   { id: 'hour-before-email', dbKey: 'hour_before_email', type: 'hour_before', channel: 'email' },
