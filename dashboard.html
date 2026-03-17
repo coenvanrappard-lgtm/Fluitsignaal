@@ -412,7 +412,7 @@ function renderNotifications(notifMethod, remindersArr) {
 
 async function saveNotifications() {
   const btn = document.getElementById('btn-save-notif');
-  btn.disabled = true; btn.textContent = 'Saving…';
+  btn.disabled = true; btn.textContent = t('saving');
   const reminders = REMINDER_MAP.filter(({ id }) => document.getElementById('rt-' + id).classList.contains('on')).map(({ dbKey }) => dbKey).join('|');
   const hasSms = REMINDER_MAP.some(({ id, channel }) => channel === 'sms' && document.getElementById('rt-' + id).classList.contains('on'));
   const hasEmail = REMINDER_MAP.some(({ id, channel }) => channel === 'email' && document.getElementById('rt-' + id).classList.contains('on'));
@@ -425,8 +425,8 @@ async function saveNotifications() {
     const status = document.getElementById('notif-save-status');
     status.style.display = 'block';
     setTimeout(() => { status.style.display = 'none'; }, 3000);
-  } catch(e) { alert('Something went wrong. Please try again.'); }
-  btn.disabled = false; btn.textContent = 'Save preferences';
+  } catch(e) { alert(t('error.generic')); }
+  btn.disabled = false; btn.textContent = t('save.btn');
 }
 
 const TODAY = new Date();
@@ -460,7 +460,7 @@ function renderEvents(selectedIds) {
     html += `<div class="sport-heading">${sport.label}</div><div class="event-list">`;
     for (const e of sport.items) {
       const sel = selectedIds.includes(e.id);
-      const soonBadge = isSoon(e.saleDate) ? `<span class="soon-badge">Soon</span>` : '';
+      const soonBadge = isSoon(e.saleDate) ? `<span class="soon-badge">${t('soon')}</span>` : '';
       html += `<div class="event-row${sel ? ' selected' : ''}" data-id="${e.id}" onclick="toggleEvent(this)">
         <div class="event-row-left">
           <div>
@@ -493,11 +493,11 @@ function showEmailPrompt(errorMsg) {
   wrap.innerHTML = `
     <div class="not-found-card">
       <div class="not-found-icon">🔔</div>
-      <div class="not-found-title">Toegang tot je meldingen</div>
-      <p class="not-found-sub">${errorMsg || 'Voer je e-mailadres in om je evenementen en voorkeuren te bekijken.'}</p>
-      <input type="email" id="email-input" placeholder="jouw@email.com" onkeydown="if(event.key==='Enter')loadByEmail()" />
-      <button class="btn-save" style="width:100%;margin-top:4px;" onclick="loadByEmail()">Mijn instellingen laden</button>
-      <a href="index.html" class="not-found-back">Nog geen account? Gratis aanmelden</a>
+      <div class="not-found-title">${t('login.title')}</div>
+      <p class="not-found-sub">${errorMsg || t('login.sub')}</p>
+      <input type="email" id="email-input" placeholder="${t('login.placeholder')}" onkeydown="if(event.key==='Enter')loadByEmail()" />
+      <button class="btn-save" style="width:100%;margin-top:4px;" onclick="loadByEmail()">${t('login.btn')}</button>
+      <a href="index.html" class="not-found-back">${t('login.signup')}</a>
     </div>`;
   body.appendChild(wrap);
 }
@@ -519,7 +519,7 @@ async function loadUser() {
     const data = JSON.parse(text);
 
     if (!data.found) {
-      showEmailPrompt('Dit e-mailadres is niet gevonden. Controleer je adres of meld je aan.');
+      showEmailPrompt(t('login.notfound'));
       return;
     }
 
@@ -528,7 +528,7 @@ async function loadUser() {
     document.getElementById('user-name').textContent = user.name || userEmail;
     document.getElementById('topbar-user-name').textContent = (user.name || userEmail).split(' ')[0];
     document.getElementById('user-plan').textContent = userPlan + ' plan';
-    document.getElementById('plan-sub').textContent = 'Je zit op het ' + userPlan + ' abonnement';
+    document.getElementById('plan-sub').textContent = t('plan.on', userPlan);
     document.getElementById('plan-card-' + userPlan)?.classList.add('current');
     if (userPlan === 'free') {
       document.getElementById('upgrade-wrap').style.display = 'block';
@@ -538,7 +538,7 @@ async function loadUser() {
       document.getElementById('btn-contact-plan').style.display = 'none';
     }
     if (params.get('upgraded') === '1') {
-      document.getElementById('plan-sub').textContent = 'Welkom bij Pro! Je abonnement is geüpgraded.';
+      document.getElementById('plan-sub').textContent = t('plan.upgraded');
       showPanel('plan', document.getElementById('nav-plan'));
     }
     const selected = user.events ? user.events.split('|').filter(Boolean) : [];
@@ -547,14 +547,14 @@ async function loadUser() {
     renderNotifications(user.notifications || 'email', reminders);
   } catch(e) {
     console.error('loadUser error:', e);
-    showEmailPrompt('Er is een fout opgetreden. Probeer het opnieuw.');
+    showEmailPrompt(t('login.error'));
   }
 }
 
 async function savePreferences() {
   const btn = document.getElementById('btn-save');
   btn.disabled = true;
-  btn.textContent = 'Saving…';
+  btn.textContent = t('saving');
 
   const selected = [...document.querySelectorAll('.event-row.selected')].map(r => r.dataset.id);
 
@@ -567,16 +567,16 @@ async function savePreferences() {
     status.style.display = 'block';
     setTimeout(() => { status.style.display = 'none'; }, 3000);
   } catch(e) {
-    alert('Something went wrong. Please try again.');
+    alert(t('error.generic'));
   }
 
   btn.disabled = false;
-  btn.textContent = 'Save preferences';
+  btn.textContent = t('save.btn');
 }
 
 async function startCheckout() {
   const btn = document.getElementById('btn-upgrade');
-  btn.textContent = 'Redirecting…';
+  btn.textContent = t('redirecting');
   btn.disabled = true;
   try {
     const res = await fetch(SCRIPT_URL + '?action=create_checkout&email=' + encodeURIComponent(userEmail), { credentials: 'omit' });
@@ -584,7 +584,7 @@ async function startCheckout() {
     let data;
     try { data = JSON.parse(text); } catch(_) {
       alert('Unexpected response:\n' + text.slice(0, 300));
-      btn.textContent = 'Upgrade to Pro — €7/mo';
+      btn.textContent = t('upgrade.btn');
       btn.disabled = false;
       return;
     }
@@ -592,12 +592,12 @@ async function startCheckout() {
       window.location.href = data.url;
     } else {
       alert('Error: ' + (data.error || JSON.stringify(data)));
-      btn.textContent = 'Upgrade to Pro — €7/mo';
+      btn.textContent = t('upgrade.btn');
       btn.disabled = false;
     }
   } catch(e) {
     alert('Fetch failed: ' + e.message);
-    btn.textContent = 'Upgrade to Pro — €7/mo';
+    btn.textContent = t('upgrade.btn');
     btn.disabled = false;
   }
 }
@@ -614,6 +614,9 @@ const TRANSLATIONS = {
     'loading': 'Loading your preferences…',
     'saved': 'Saved!',
     'save.btn': 'Save preferences',
+    'saving': 'Saving…',
+    'redirecting': 'Redirecting…',
+    'error.generic': 'Something went wrong. Please try again.',
     'panel.notif.sub': 'Choose how and when you want to be notified',
     'notif.email': 'Email',
     'reminder.weekly.label': 'Weekly digest',
@@ -639,6 +642,17 @@ const TRANSLATIONS = {
     'plan.team.f2': 'Shared event lists',
     'plan.team.f3': 'Priority support',
     'signout': 'Sign out',
+    'soon': 'Soon',
+    'upgrade.btn': 'Upgrade to Pro — €7/mo',
+    'plan.on': (p) => `You're on the ${p} plan`,
+    'plan.upgraded': 'Welcome to Pro! Your subscription has been upgraded.',
+    'login.title': 'Access your alerts',
+    'login.sub': 'Enter your email to view your events and preferences.',
+    'login.placeholder': 'your@email.com',
+    'login.btn': 'Load my settings',
+    'login.signup': 'No account? Sign up for free',
+    'login.notfound': 'This email address was not found. Check your address or sign up.',
+    'login.error': 'Something went wrong. Please try again.',
   },
   nl: {
     'nav.events': 'Mijn events',
@@ -650,6 +664,9 @@ const TRANSLATIONS = {
     'loading': 'Voorkeuren laden…',
     'saved': 'Opgeslagen!',
     'save.btn': 'Opslaan',
+    'saving': 'Opslaan…',
+    'redirecting': 'Doorsturen…',
+    'error.generic': 'Er is iets misgegaan. Probeer het opnieuw.',
     'panel.notif.sub': 'Kies hoe en wanneer je een melding wilt ontvangen',
     'notif.email': 'E-mail',
     'reminder.weekly.label': 'Wekelijkse samenvatting',
@@ -675,10 +692,26 @@ const TRANSLATIONS = {
     'plan.team.f2': 'Gedeelde eventlijsten',
     'plan.team.f3': 'Prioriteitsondersteuning',
     'signout': 'Uitloggen',
+    'soon': 'Binnenkort',
+    'upgrade.btn': 'Upgraden naar Pro — €7/mnd',
+    'plan.on': (p) => `Je zit op het ${p} abonnement`,
+    'plan.upgraded': 'Welkom bij Pro! Je abonnement is geüpgraded.',
+    'login.title': 'Toegang tot je meldingen',
+    'login.sub': 'Voer je e-mailadres in om je evenementen en voorkeuren te bekijken.',
+    'login.placeholder': 'jouw@email.com',
+    'login.btn': 'Mijn instellingen laden',
+    'login.signup': 'Nog geen account? Gratis aanmelden',
+    'login.notfound': 'Dit e-mailadres is niet gevonden. Controleer je adres of meld je aan.',
+    'login.error': 'Er is een fout opgetreden. Probeer het opnieuw.',
   }
 };
 
 let currentLang = localStorage.getItem('lang') || 'nl';
+
+function t(key, arg) {
+  const v = (TRANSLATIONS[currentLang] || TRANSLATIONS.nl)[key];
+  return typeof v === 'function' ? v(arg) : (v !== undefined ? v : key);
+}
 
 function setLang(lang) {
   currentLang = lang;
@@ -697,6 +730,23 @@ function setLang(lang) {
     nlBtn.style.background = lang === 'nl' ? '#1a1a1a' : 'transparent';
     nlBtn.style.color = lang === 'nl' ? '#fff' : '#aaa';
   }
+  // Re-render event list so "Soon" badge is translated
+  const eventsBody = document.getElementById('events-body');
+  if (eventsBody && eventsBody.children.length) {
+    const selected = [...document.querySelectorAll('.event-row.selected')].map(r => r.dataset.id);
+    renderEvents(selected);
+  }
+  // Update plan sub text
+  if (userPlan && document.getElementById('plan-sub')) {
+    document.getElementById('plan-sub').textContent = t('plan.on', userPlan);
+  }
+  // Update save buttons
+  const btnSave = document.getElementById('btn-save');
+  if (btnSave && !btnSave.disabled) btnSave.textContent = t('save.btn');
+  const btnSaveNotif = document.getElementById('btn-save-notif');
+  if (btnSaveNotif && !btnSaveNotif.disabled) btnSaveNotif.textContent = t('save.btn');
+  const btnUpgrade = document.getElementById('btn-upgrade');
+  if (btnUpgrade && !btnUpgrade.disabled) btnUpgrade.textContent = t('upgrade.btn');
 }
 
 setLang(currentLang);
