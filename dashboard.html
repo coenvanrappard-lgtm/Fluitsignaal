@@ -577,16 +577,22 @@ async function startCheckout() {
   try {
     const res = await fetch(SCRIPT_URL + '?action=create_checkout&email=' + encodeURIComponent(userEmail), { credentials: 'omit' });
     const text = await res.text();
-    const data = JSON.parse(text);
+    let data;
+    try { data = JSON.parse(text); } catch(_) {
+      alert('Unexpected response:\n' + text.slice(0, 300));
+      btn.textContent = 'Upgrade to Pro — €7/mo';
+      btn.disabled = false;
+      return;
+    }
     if (data.url) {
       window.location.href = data.url;
     } else {
-      alert('Could not start checkout. Please try again.');
+      alert('Error: ' + (data.error || JSON.stringify(data)));
       btn.textContent = 'Upgrade to Pro — €7/mo';
       btn.disabled = false;
     }
   } catch(e) {
-    alert('Something went wrong. Please try again.');
+    alert('Fetch failed: ' + e.message);
     btn.textContent = 'Upgrade to Pro — €7/mo';
     btn.disabled = false;
   }
