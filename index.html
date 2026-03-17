@@ -68,6 +68,9 @@
     .nav-cta { background: var(--orange); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; text-decoration: none; transition: opacity 0.15s; }
     .nav-cta:hover { opacity: 0.88; }
     .nav-mobile-cta { display: none; }
+    .lang-toggle { display: flex; gap: 2px; border: 0.5px solid rgba(255,255,255,0.2); border-radius: 6px; overflow: hidden; }
+    .lang-toggle button { padding: 5px 9px; font-size: 12px; font-weight: 500; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; background: transparent; color: rgba(255,255,255,0.5); transition: background 0.15s, color 0.15s; }
+    .lang-toggle button.active { background: rgba(255,255,255,0.15); color: #fff; }
 
     /* Account modal */
     .account-modal-overlay {
@@ -260,29 +263,29 @@
   <nav class="nav">
     <div class="nav-logo">Fluitsignaal</div>
     <div class="nav-links">
-      <a href="#how" class="nav-link" data-i18n="nav.how">How it works</a>
-      <a href="#sports" class="nav-link" data-i18n="nav.events">Events</a>
-      <a href="#pricing" class="nav-link" data-i18n="nav.pricing">Pricing</a>
+      <a href="#how" class="nav-link" data-i18n="nav.how">Hoe het werkt</a>
+      <a href="#sports" class="nav-link" data-i18n="nav.events">Evenementen</a>
+      <a href="#pricing" class="nav-link" data-i18n="nav.pricing">Prijzen</a>
       <a href="spotlight.html" class="nav-link">Spotlight</a>
-      <button class="nav-cta" onclick="openAccountModal()" data-i18n="nav.account">My account</button>
-      <div style="display:flex;gap:2px;border:0.5px solid rgba(255,255,255,0.2);border-radius:6px;overflow:hidden;">
-        <button id="lang-en" onclick="setLang('en')" style="padding:5px 9px;font-size:12px;font-weight:500;border:none;background:#1a1a1a;color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;">EN</button>
-        <button id="lang-nl" onclick="setLang('nl')" style="padding:5px 9px;font-size:12px;font-weight:500;border:none;background:transparent;color:#888;cursor:pointer;font-family:'DM Sans',sans-serif;">NL</button>
-      </div>
+      <button class="nav-cta" onclick="openAccountModal()" data-i18n="nav.account">Mijn account</button>
     </div>
-    <button class="nav-mobile-cta" onclick="document.getElementById('signup-form').scrollIntoView({behavior:'smooth'})" data-i18n="nav.cta">Get alerts</button>
+    <div class="lang-toggle">
+      <button id="lang-en" onclick="setLang('en')">EN</button>
+      <button id="lang-nl" onclick="setLang('nl')" class="active">NL</button>
+    </div>
+    <button class="nav-mobile-cta" onclick="document.getElementById('signup-form').scrollIntoView({behavior:'smooth'})" data-i18n="nav.cta">Meldingen instellen</button>
   </nav>
 </div>
 
 <div class="hero-wrap">
   <div class="site">
     <section class="hero">
-      <p class="hero-eyebrow" data-i18n="hero.eyebrow">Never miss a ticket again</p>
-      <h1 class="hero-title" data-i18n-html="hero.title">Tickets sell out.<br><em>Not for you.</em></h1>
-      <p class="hero-sub" data-i18n="hero.sub">Get email alerts the moment tickets go on sale for the world's biggest sporting events — grand slams, World Cup, Ryder Cup, and more.</p>
+      <p class="hero-eyebrow" data-i18n="hero.eyebrow">Mis nooit meer een ticket</p>
+      <h1 class="hero-title" data-i18n-html="hero.title">Tickets raken op.<br><em>Jij niet.</em></h1>
+      <p class="hero-sub" data-i18n="hero.sub">Ontvang een melding zodra tickets in de verkoop gaan voor de grootste sportevenementen — grand slams, WK, Ryder Cup, en meer.</p>
       <div class="hero-actions">
-        <button class="btn-primary" onclick="document.getElementById('signup-form').scrollIntoView({behavior:'smooth'})" data-i18n="hero.cta">Start for free</button>
-        <button class="btn-secondary" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})" data-i18n="hero.how">See how it works</button>
+        <button class="btn-primary" onclick="document.getElementById('signup-form').scrollIntoView({behavior:'smooth'})" data-i18n="hero.cta">Gratis starten</button>
+        <button class="btn-secondary" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})" data-i18n="hero.how">Zo werkt het</button>
       </div>
     </section>
   </div>
@@ -305,19 +308,19 @@
   <div class="divider"></div>
 
   <section class="how" id="how">
-    <p class="section-label" data-i18n="how.label">How it works</p>
+    <p class="section-label" data-i18n="how.label">Hoe het werkt</p>
     <div class="steps">
-      <div class="step"><div class="step-num">01</div><div class="step-title" data-i18n="step1.title">Choose your events</div><div class="step-body" data-i18n="step1.body">Select from our curated list of events across tennis, football, golf, rugby, and hockey.</div></div>
-      <div class="step"><div class="step-num">02</div><div class="step-title" data-i18n="step2.title">We monitor everything</div><div class="step-body" data-i18n="step2.body">Our system tracks ticket sale dates, lottery openings, and resale windows so you don't have to.</div></div>
-      <div class="step"><div class="step-num">03</div><div class="step-title" data-i18n="step3.title">Get alerted in time</div><div class="step-body" data-i18n="step3.body">Receive an email the day before and on the day of each sale — with a direct link to buy.</div></div>
-      <div class="step"><div class="step-num">04</div><div class="step-title" data-i18n="step4.title">Get your tickets</div><div class="step-body" data-i18n="step4.body">Be among the first to the queue. No more finding out a week after tickets sold out.</div></div>
+      <div class="step"><div class="step-num">01</div><div class="step-title" data-i18n="step1.title">Kies je evenementen</div><div class="step-body" data-i18n="step1.body">Selecteer uit onze lijst van evenementen in tennis, voetbal, golf, rugby en hockey.</div></div>
+      <div class="step"><div class="step-num">02</div><div class="step-title" data-i18n="step2.title">Wij houden alles bij</div><div class="step-body" data-i18n="step2.body">Ons systeem volgt verkoopdata, loterijopeningen en doorverkoopvensters — zodat jij dat niet hoeft te doen.</div></div>
+      <div class="step"><div class="step-num">03</div><div class="step-title" data-i18n="step3.title">Ontvang een melding op tijd</div><div class="step-body" data-i18n="step3.body">Krijg een e-mail de dag voor en op de dag van de verkoop — met een directe link om te kopen.</div></div>
+      <div class="step"><div class="step-num">04</div><div class="step-title" data-i18n="step4.title">Koop je tickets</div><div class="step-body" data-i18n="step4.body">Wees een van de eersten in de rij. Niet meer een week later erachter komen dat alles uitverkocht was.</div></div>
     </div>
   </section>
 </div>
 
 <section class="sports" id="sports">
   <div class="sports-inner">
-    <p class="section-label" data-i18n="sports.label">Events we cover</p>
+    <p class="section-label" data-i18n="sports.label">Evenementen die we volgen</p>
     <div class="sports-grid">
       <div class="sport-card tennis"><div class="sport-icon">🎾</div><div class="sport-name">Tennis</div><div class="sport-events">French Open · Wimbledon · Australian Open · US Open · Rotterdam Open · Libema Open · Davis Cup</div></div>
       <div class="sport-card football"><div class="sport-icon">⚽</div><div class="sport-name">Football</div><div class="sport-events">Ajax · Feyenoord · PSV · Nederlands Elftal · EK · WK · WK Clubs</div></div>
@@ -330,26 +333,26 @@
 
 <div class="site">
   <section class="pricing" id="pricing">
-    <p class="section-label" data-i18n="pricing.label">Pricing</p>
+    <p class="section-label" data-i18n="pricing.label">Prijzen</p>
     <div class="plans">
       <div class="plan">
-        <div class="plan-name" data-i18n="plan.free.name">Free</div>
+        <div class="plan-name" data-i18n="plan.free.name">Gratis</div>
         <div class="plan-price">€0</div>
-        <div class="plan-period" data-i18n="plan.free.period">forever</div>
-        <ul class="plan-features"><li data-i18n="plan.free.f1">Up to 4 events</li><li data-i18n="plan.free.f2">Email alerts</li><li data-i18n="plan.free.f3">Day-before reminders</li></ul>
+        <div class="plan-period" data-i18n="plan.free.period">voor altijd</div>
+        <ul class="plan-features"><li data-i18n="plan.free.f1">Tot 4 evenementen</li><li data-i18n="plan.free.f2">E-mailmeldingen</li><li data-i18n="plan.free.f3">Dag-voor-herinneringen</li></ul>
       </div>
       <div class="plan featured">
-        <div class="plan-badge" data-i18n="plan.pro.badge">Most popular</div>
+        <div class="plan-badge" data-i18n="plan.pro.badge">Meest populair</div>
         <div class="plan-name" data-i18n="plan.pro.name">Pro</div>
         <div class="plan-price">€7</div>
-        <div class="plan-period" data-i18n="plan.pro.period">per month</div>
-        <ul class="plan-features"><li data-i18n="plan.pro.f1">Unlimited events</li><li data-i18n="plan.pro.f2">Email + SMS alerts</li><li data-i18n="plan.pro.f3">All reminder types</li><li data-i18n="plan.pro.f4">Lottery registration reminders</li></ul>
+        <div class="plan-period" data-i18n="plan.pro.period">per maand</div>
+        <ul class="plan-features"><li data-i18n="plan.pro.f1">Onbeperkt evenementen</li><li data-i18n="plan.pro.f2">E-mail + SMS-meldingen</li><li data-i18n="plan.pro.f3">Alle herinneringstypes</li><li data-i18n="plan.pro.f4">Loterijaanmelding herinneringen</li></ul>
       </div>
       <div class="plan">
         <div class="plan-name" data-i18n="plan.team.name">Team</div>
         <div class="plan-price">€19</div>
-        <div class="plan-period" data-i18n="plan.team.period">per month, up to 5 people</div>
-        <ul class="plan-features"><li data-i18n="plan.team.f1">Everything in Pro</li><li data-i18n="plan.team.f2">Shared event lists</li><li data-i18n="plan.team.f3">Priority support</li></ul>
+        <div class="plan-period" data-i18n="plan.team.period">per maand, tot 5 personen</div>
+        <ul class="plan-features"><li data-i18n="plan.team.f1">Alles uit Pro</li><li data-i18n="plan.team.f2">Gedeelde evenementenlijsten</li><li data-i18n="plan.team.f3">Prioriteitsondersteuning</li></ul>
       </div>
     </div>
   </section>
@@ -358,49 +361,49 @@
 <section class="signup" id="signup-form">
   <div class="signup-inner">
     <div class="signup-box">
-      <h2 class="signup-title" data-i18n="signup.title">Start getting alerts</h2>
-      <p class="signup-sub" data-i18n="signup.sub">Choose your plan, pick your events, and we'll notify you the moment tickets go on sale.</p>
+      <h2 class="signup-title" data-i18n="signup.title">Meldingen instellen</h2>
+      <p class="signup-sub" data-i18n="signup.sub">Kies je abonnement, selecteer je evenementen en wij sturen je een melding zodra tickets in de verkoop gaan.</p>
       <div class="signup-form">
-        <input type="text" id="signup-name" data-i18n-placeholder="signup.name" placeholder="Your name" />
+        <input type="text" id="signup-name" data-i18n-placeholder="signup.name" placeholder="Je naam" />
         <div class="notif-toggle">
-          <button class="notif-btn active" id="notif-email" onclick="selectNotif('email')" data-i18n="notif.email">Email</button>
+          <button class="notif-btn active" id="notif-email" onclick="selectNotif('email')" data-i18n="notif.email">E-mail</button>
           <button class="notif-btn" id="notif-sms" onclick="selectNotif('sms')" data-i18n="notif.sms">SMS</button>
-          <button class="notif-btn" id="notif-both" onclick="selectNotif('both')" data-i18n="notif.both">Both</button>
+          <button class="notif-btn" id="notif-both" onclick="selectNotif('both')" data-i18n="notif.both">Beide</button>
         </div>
-        <input type="email" id="signup-email" data-i18n-placeholder="signup.email" placeholder="Your email address" />
-        <input type="tel" id="signup-phone" data-i18n-placeholder="signup.phone" placeholder="Your phone number (e.g. +31612345678)" style="display:none;" />
+        <input type="email" id="signup-email" data-i18n-placeholder="signup.email" placeholder="Je e-mailadres" />
+        <input type="tel" id="signup-phone" data-i18n-placeholder="signup.phone" placeholder="Je telefoonnummer (bijv. +31612345678)" style="display:none;" />
         <div class="plan-toggle">
-          <button class="plan-btn active" id="plan-free" onclick="selectPlan('free')" data-i18n="plan.free.btn">Free — up to 4 events</button>
-          <button class="plan-btn" id="plan-pro" onclick="selectPlan('pro')" data-i18n="plan.pro.btn">Pro — €7/mo, unlimited</button>
+          <button class="plan-btn active" id="plan-free" onclick="selectPlan('free')" data-i18n="plan.free.btn">Gratis — tot 4 evenementen</button>
+          <button class="plan-btn" id="plan-pro" onclick="selectPlan('pro')" data-i18n="plan.pro.btn">Pro — €7/mnd, onbeperkt</button>
         </div>
         <div class="reminders-section">
-          <div style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.8);margin-bottom:8px;" data-i18n="reminders.label">Choose your reminders</div>
+          <div style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.8);margin-bottom:8px;" data-i18n="reminders.label">Kies je herinneringen</div>
           <div class="reminder-options">
             <label class="reminder-opt">
               <input type="checkbox" id="reminder-weekly" checked />
               <span class="reminder-box">
-                <span class="reminder-label" data-i18n="reminder.weekly.label">Weekly digest</span>
-                <span class="reminder-desc" data-i18n="reminder.weekly.desc">Every Monday — full overview of upcoming sales</span>
+                <span class="reminder-label" data-i18n="reminder.weekly.label">Wekelijkse samenvatting</span>
+                <span class="reminder-desc" data-i18n="reminder.weekly.desc">Elke maandag — volledig overzicht van aankomende verkopen</span>
               </span>
             </label>
             <label class="reminder-opt">
               <input type="checkbox" id="reminder-day-before" checked />
               <span class="reminder-box">
-                <span class="reminder-label" data-i18n="reminder.day.label">Day before</span>
-                <span class="reminder-desc" data-i18n="reminder.day.desc">Reminder the day before a sale opens</span>
+                <span class="reminder-label" data-i18n="reminder.day.label">Dag van tevoren</span>
+                <span class="reminder-desc" data-i18n="reminder.day.desc">Herinnering de dag voor de verkoop opent</span>
               </span>
             </label>
             <label class="reminder-opt">
               <input type="checkbox" id="reminder-hour-before" />
               <span class="reminder-box">
-                <span class="reminder-label" data-i18n="reminder.hour.label">1 hour before</span>
-                <span class="reminder-desc" data-i18n="reminder.hour.desc">Alert 1 hour before the sale goes live</span>
+                <span class="reminder-label" data-i18n="reminder.hour.label">1 uur van tevoren</span>
+                <span class="reminder-desc" data-i18n="reminder.hour.desc">Melding 1 uur voor de verkoop live gaat</span>
               </span>
             </label>
           </div>
         </div>
         <div class="events-section visible" id="events-section">
-          <div style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.8);" data-i18n="events.label">Choose your events</div>
+          <div style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.8);" data-i18n="events.label">Kies je evenementen</div>
           <div class="sport-group">
             <div class="sport-header open" onclick="toggleSport(this)">Tennis <span class="chevron">▼</span></div>
             <div class="sport-events-list">
@@ -465,12 +468,12 @@
               <div class="event-toggle" data-id="beachlife_volleyball_scheveningen" onclick="toggleEvent(this)">Summer BeachLife Volleyball</div>
             </div>
           </div>
-          <div class="event-counter" id="event-counter" style="display:none;"><span id="event-count">0</span><span id="event-counter-suffix" data-i18n="events.counter"> / 4 events selected</span></div>
+          <div class="event-counter" id="event-counter" style="display:none;"><span id="event-count">0</span><span id="event-counter-suffix" data-i18n="events.counter"> / 4 evenementen geselecteerd</span></div>
         </div>
-        <button class="btn-primary" onclick="handleSignup()" data-i18n="signup.btn">Get alerts</button>
-        <div class="success-msg" id="success-msg" data-i18n="signup.success">You're in! Check your inbox — alerts will start arriving shortly.</div>
-        <div class="error-msg" id="error-msg" data-i18n="signup.error">Something went wrong. Please try again.</div>
-        <p class="signup-note" data-i18n="signup.note">No spam. Just ticket alerts that actually matter.</p>
+        <button class="btn-primary" onclick="handleSignup()" data-i18n="signup.btn">Meldingen instellen</button>
+        <div class="success-msg" id="success-msg" data-i18n="signup.success">Je bent erbij! Check je inbox — meldingen komen eraan.</div>
+        <div class="error-msg" id="error-msg" data-i18n="signup.error">Er is iets misgegaan. Probeer het opnieuw.</div>
+        <p class="signup-note" data-i18n="signup.note">Geen spam. Alleen ticketmeldingen die er echt toe doen.</p>
       </div>
     </div>
   </div>
@@ -480,11 +483,11 @@
   <footer class="footer">
     <div class="footer-left">
       <div class="footer-logo">Fluitsignaal</div>
-      <div class="footer-tagline" data-i18n="footer.tagline">Ticket alerts for people who actually want to go.</div>
+      <div class="footer-tagline" data-i18n="footer.tagline">Ticketmeldingen voor mensen die er echt naartoe willen.</div>
     </div>
     <div class="footer-links">
-      <a href="#signup-form" class="footer-link" onclick="document.getElementById('signup-form').scrollIntoView({behavior:'smooth'});return false;" data-i18n="footer.signup">Sign up</a>
-      <button class="footer-link" onclick="openAccountModal()" data-i18n="footer.account">My account</button>
+      <a href="#signup-form" class="footer-link" onclick="document.getElementById('signup-form').scrollIntoView({behavior:'smooth'});return false;" data-i18n="footer.signup">Aanmelden</a>
+      <button class="footer-link" onclick="openAccountModal()" data-i18n="footer.account">Mijn account</button>
       <span class="footer-note">Amsterdam · 2026</span>
     </div>
   </footer>
@@ -494,10 +497,10 @@
 <div class="account-modal-overlay" id="account-modal-overlay" onclick="closeAccountModalOnOverlay(event)">
   <div class="account-modal">
     <button class="account-modal-close" onclick="closeAccountModal()">×</button>
-    <div class="account-modal-title" data-i18n="modal.title">My account</div>
-    <p class="account-modal-sub" data-i18n="modal.sub">Enter your email address to access your alert preferences.</p>
-    <input type="email" id="account-email-input" data-i18n-placeholder="modal.email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')goToAccount()" />
-    <button class="btn-primary" style="width:100%" onclick="goToAccount()" data-i18n="modal.btn">Go to my account</button>
+    <div class="account-modal-title" data-i18n="modal.title">Mijn account</div>
+    <p class="account-modal-sub" data-i18n="modal.sub">Voer je e-mailadres in om je meldingsvoorkeuren te bekijken.</p>
+    <input type="email" id="account-email-input" data-i18n-placeholder="modal.email" placeholder="jouw@email.com" onkeydown="if(event.key==='Enter')goToAccount()" />
+    <button class="btn-primary" style="width:100%" onclick="goToAccount()" data-i18n="modal.btn">Naar mijn account</button>
   </div>
 </div>
 
@@ -571,8 +574,8 @@ function setLang(lang) {
   document.querySelectorAll('[data-i18n]').forEach(el => { if (t[el.dataset.i18n] !== undefined) el.textContent = t[el.dataset.i18n]; });
   document.querySelectorAll('[data-i18n-html]').forEach(el => { if (t[el.dataset.i18nHtml] !== undefined) el.innerHTML = t[el.dataset.i18nHtml]; });
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { if (t[el.dataset.i18nPlaceholder] !== undefined) el.placeholder = t[el.dataset.i18nPlaceholder]; });
-  document.getElementById('lang-en').style.cssText = lang === 'en' ? 'padding:5px 9px;font-size:12px;font-weight:500;border:none;background:#1a1a1a;color:#fff;cursor:pointer;font-family:\'DM Sans\',sans-serif;' : 'padding:5px 9px;font-size:12px;font-weight:500;border:none;background:transparent;color:#888;cursor:pointer;font-family:\'DM Sans\',sans-serif;';
-  document.getElementById('lang-nl').style.cssText = lang === 'nl' ? 'padding:5px 9px;font-size:12px;font-weight:500;border:none;background:#1a1a1a;color:#fff;cursor:pointer;font-family:\'DM Sans\',sans-serif;' : 'padding:5px 9px;font-size:12px;font-weight:500;border:none;background:transparent;color:#888;cursor:pointer;font-family:\'DM Sans\',sans-serif;';
+  document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+  document.getElementById('lang-nl').classList.toggle('active', lang === 'nl');
 }
 
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwXE6ADpakhn2sQez_fjbSEP-PktBxvmvafaK3GWJmQClV2BFHYTC7zpgZuJ9ieKvdp/exec';
