@@ -181,6 +181,14 @@
     .notif-toggle { display: flex; gap: 8px; }
     .notif-btn { flex: 1; padding: 10px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; background: transparent; color: rgba(255,255,255,0.5); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
     .notif-btn.active { background: var(--orange); border-color: var(--orange); color: #fff; }
+    .reminders-section { display: flex; flex-direction: column; gap: 8px; }
+    .reminder-options { display: flex; flex-direction: column; gap: 6px; }
+    .reminder-opt { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; }
+    .reminder-opt input[type="checkbox"] { display: none; }
+    .reminder-box { display: flex; flex-direction: column; padding: 10px 12px; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; background: rgba(255,255,255,0.05); flex: 1; transition: all 0.15s; }
+    .reminder-opt input:checked + .reminder-box { border-color: var(--orange); background: rgba(240,78,15,0.1); }
+    .reminder-label { font-size: 13px; font-weight: 500; color: #fff; }
+    .reminder-desc { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 2px; }
     .plan-toggle { display: flex; gap: 8px; }
     .plan-btn { flex: 1; padding: 10px; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; background: transparent; font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; text-align: center; transition: all 0.15s; color: rgba(255,255,255,0.6); }
     .plan-btn.active { border-color: var(--orange); background: var(--orange); color: #fff; }
@@ -360,6 +368,32 @@
           <button class="plan-btn active" id="plan-free" onclick="selectPlan('free')">Free — up to 3 events</button>
           <button class="plan-btn" id="plan-pro" onclick="selectPlan('pro')">Pro — €4/mo, unlimited</button>
         </div>
+        <div class="reminders-section">
+          <div style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.8);margin-bottom:8px;">Choose your reminders</div>
+          <div class="reminder-options">
+            <label class="reminder-opt">
+              <input type="checkbox" id="reminder-weekly" checked />
+              <span class="reminder-box">
+                <span class="reminder-label">Weekly digest</span>
+                <span class="reminder-desc">Every Monday — full overview of upcoming sales</span>
+              </span>
+            </label>
+            <label class="reminder-opt">
+              <input type="checkbox" id="reminder-day-before" checked />
+              <span class="reminder-box">
+                <span class="reminder-label">Day before</span>
+                <span class="reminder-desc">Reminder the day before a sale opens</span>
+              </span>
+            </label>
+            <label class="reminder-opt">
+              <input type="checkbox" id="reminder-hour-before" />
+              <span class="reminder-box">
+                <span class="reminder-label">1 hour before</span>
+                <span class="reminder-desc">Alert 1 hour before the sale goes live</span>
+              </span>
+            </label>
+          </div>
+        </div>
         <div class="events-section visible" id="events-section">
           <div style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.8);">Choose your events</div>
           <div class="sport-group">
@@ -512,8 +546,9 @@ async function handleSignup() {
   const btn = event.target;
   btn.textContent = 'Sending…';
   btn.disabled = true;
+  const reminders = ['weekly','day_before','hour_before'].filter(r => document.getElementById('reminder-'+r.replace('_','-')).checked).join('|');
   try {
-    await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ name, email, phone, plan: currentPlan, events: [...selectedEvents].join('|'), notifications: currentNotif }) });
+    await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ name, email, phone, plan: currentPlan, events: [...selectedEvents].join('|'), notifications: currentNotif, reminders }) });
     document.getElementById('success-msg').style.display = 'block';
     document.getElementById('error-msg').style.display = 'none';
     btn.style.display = 'none';
