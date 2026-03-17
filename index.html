@@ -178,6 +178,9 @@
     .signup-form input { padding: 12px 14px; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: #fff; background: rgba(255,255,255,0.08); width: 100%; outline: none; transition: border-color 0.15s; }
     .signup-form input:focus { border-color: var(--orange); }
     .signup-form input::placeholder { color: rgba(255,255,255,0.3); }
+    .notif-toggle { display: flex; gap: 8px; }
+    .notif-btn { flex: 1; padding: 10px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; background: transparent; color: rgba(255,255,255,0.5); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+    .notif-btn.active { background: var(--orange); border-color: var(--orange); color: #fff; }
     .plan-toggle { display: flex; gap: 8px; }
     .plan-btn { flex: 1; padding: 10px; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; background: transparent; font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; text-align: center; transition: all 0.15s; color: rgba(255,255,255,0.6); }
     .plan-btn.active { border-color: var(--orange); background: var(--orange); color: #fff; }
@@ -343,10 +346,16 @@
   <div class="signup-inner">
     <div class="signup-box">
       <h2 class="signup-title">Start getting alerts</h2>
-      <p class="signup-sub">Choose your plan, pick your events, and we'll email you the moment tickets go on sale.</p>
+      <p class="signup-sub">Choose your plan, pick your events, and we'll notify you the moment tickets go on sale.</p>
       <div class="signup-form">
         <input type="text" id="signup-name" placeholder="Your name" />
+        <div class="notif-toggle">
+          <button class="notif-btn active" id="notif-email" onclick="selectNotif('email')">Email</button>
+          <button class="notif-btn" id="notif-sms" onclick="selectNotif('sms')">SMS</button>
+          <button class="notif-btn" id="notif-both" onclick="selectNotif('both')">Both</button>
+        </div>
         <input type="email" id="signup-email" placeholder="Your email address" />
+        <input type="tel" id="signup-phone" placeholder="Your phone number (e.g. +31612345678)" style="display:none;" />
         <div class="plan-toggle">
           <button class="plan-btn active" id="plan-free" onclick="selectPlan('free')">Free — up to 3 events</button>
           <button class="plan-btn" id="plan-pro" onclick="selectPlan('pro')">Pro — €4/mo, unlimited</button>
@@ -439,7 +448,15 @@
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx15TCUK1KKwA_X6UiXmSQl-ycTmB65o81qpc4fc4y9Y436BpxgOHMbFZuDv9q0B2MK/exec';
 let currentPlan = 'free';
+let currentNotif = 'email';
 let selectedEvents = new Set();
+
+function selectNotif(notif) {
+  currentNotif = notif;
+  ['email','sms','both'].forEach(n => document.getElementById('notif-'+n).classList.toggle('active', n === notif));
+  document.getElementById('signup-email').style.display = notif === 'sms' ? 'none' : '';
+  document.getElementById('signup-phone').style.display = notif === 'email' ? 'none' : '';
+}
 
 function openAccountModal() {
   document.getElementById('account-modal-overlay').classList.add('open');
@@ -486,14 +503,17 @@ function updateToggles() {
 }
 async function handleSignup() {
   const name = document.getElementById('signup-name').value.trim();
-  const email = document.getElementById('signup-email').value.trim();
-  if (!name || !email) { alert('Please fill in your name and email.'); return; }
+  const email = currentNotif !== 'sms' ? document.getElementById('signup-email').value.trim() : '';
+  const phone = currentNotif !== 'email' ? document.getElementById('signup-phone').value.trim() : '';
+  if (!name) { alert('Please fill in your name.'); return; }
+  if (currentNotif !== 'sms' && !email) { alert('Please fill in your email.'); return; }
+  if (currentNotif !== 'email' && !phone) { alert('Please fill in your phone number.'); return; }
   if (selectedEvents.size === 0) { alert('Please select at least one event.'); return; }
   const btn = event.target;
   btn.textContent = 'Sending…';
   btn.disabled = true;
   try {
-    await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ name, email, plan: currentPlan, events: [...selectedEvents].join('|') }) });
+    await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ name, email, phone, plan: currentPlan, events: [...selectedEvents].join('|'), notifications: currentNotif }) });
     document.getElementById('success-msg').style.display = 'block';
     document.getElementById('error-msg').style.display = 'none';
     btn.style.display = 'none';
