@@ -166,11 +166,13 @@
     .sport-events { font-size: 12px; color: var(--muted); line-height: 1.8; font-weight: 300; }
 
     /* Spotlight teaser */
-    .spotlight-teaser { background: var(--dark); padding: 5.5rem 2rem; text-align: center; }
-    .spotlight-teaser-inner { max-width: 620px; margin: 0 auto; }
+    .spotlight-teaser { background: var(--dark); overflow: hidden; }
+    .spotlight-teaser-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; padding: 5.5rem 2rem; align-items: center; }
+    .spotlight-teaser-img { border-radius: 14px; height: 420px; background-size: cover; background-position: center; flex-shrink: 0; }
     .spotlight-teaser-label { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #a855f7; margin-bottom: 1.5rem; }
-    .spotlight-teaser-title { font-family: 'DM Serif Display', serif; font-size: clamp(28px, 4vw, 42px); color: #fff; line-height: 1.15; letter-spacing: -0.5px; margin-bottom: 1.5rem; }
-    .spotlight-teaser-body { font-size: 16px; color: rgba(255,255,255,0.55); line-height: 1.75; font-weight: 300; margin-bottom: 2.5rem; }
+    .spotlight-teaser-title { font-family: 'DM Serif Display', serif; font-size: clamp(24px, 3vw, 38px); color: #fff; line-height: 1.15; letter-spacing: -0.5px; margin-bottom: 1.5rem; }
+    .spotlight-teaser-body { font-size: 15px; color: rgba(255,255,255,0.55); line-height: 1.75; font-weight: 300; margin-bottom: 2.5rem; }
+    @media (max-width: 767px) { .spotlight-teaser-inner { grid-template-columns: 1fr; gap: 2rem; padding: 3.5rem 1.25rem; } .spotlight-teaser-img { height: 240px; } }
 
     /* FAQ */
     .faq { padding: 5.5rem 0; }
@@ -405,10 +407,13 @@
 
 <section class="spotlight-teaser">
   <div class="spotlight-teaser-inner">
-    <div class="spotlight-teaser-label">Spotlight</div>
-    <h2 class="spotlight-teaser-title">Every week, one event that deserves more attention than it gets.</h2>
-    <p class="spotlight-teaser-body">Polo on Museumplein. 3x3 basketball on the NDSM waterfront. Ice hockey in a sold-out Tilburg arena. Each week's digest includes a Spotlight — a short write-up on an event that's worth going to but easy to overlook. Subscribers only.</p>
-    <button class="btn-primary" onclick="document.getElementById('signup-form').scrollIntoView({behavior:'smooth'})">Get the weekly digest</button>
+    <div class="spotlight-teaser-img" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/c/c7/Jaeger-LeCoultre_Polo_Masters_2013_-_31082013_-_Match_Legacy_vs_Jaeger-LeCoultre_Veytay_for_the_third_place_44.jpg')"></div>
+    <div>
+      <div class="spotlight-teaser-label">Spotlight</div>
+      <h2 class="spotlight-teaser-title">Every week, one event that deserves more attention than it gets.</h2>
+      <p class="spotlight-teaser-body">Polo on Museumplein. 3x3 basketball on the NDSM waterfront. Ice hockey in a sold-out Tilburg arena. Each week's digest includes a Spotlight — a short write-up on an event that's worth going to but easy to overlook. Subscribers only.</p>
+      <button class="btn-primary" onclick="document.getElementById('signup-form').scrollIntoView({behavior:'smooth'})">Get the weekly digest</button>
+    </div>
   </div>
 </section>
 
