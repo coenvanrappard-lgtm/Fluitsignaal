@@ -3,51 +3,597 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fluitsignaal Dashboard</title>
+  <title>My Account — Fluitsignaal</title>
+  <link rel="icon" type="image/png" href="logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="site.css" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; color: #1a1a1a; background: #f9f9f7; min-height: 100vh; }
+
+    /* Topbar */
+    .topbar { background: #fff; border-bottom: 0.5px solid #e5e5e5; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; height: 56px; position: sticky; top: 0; z-index: 10; max-width: 100%; }
+    .topbar-inner { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 1100px; margin: 0 auto; }
+    .topbar-logo { display: flex; align-items: center; gap: 9px; text-decoration: none; color: #1a1a1a; }
+    .topbar-logo img { width: 26px; height: 26px; display: block; }
+    .topbar-logo-text { font-family: 'DM Serif Display', serif; font-size: 18px; letter-spacing: -0.3px; }
+    .topbar-links { display: flex; align-items: center; gap: 2rem; }
+    .topbar-link { font-size: 14px; color: #666; text-decoration: none; background: none; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; padding: 0; transition: color 0.15s; }
+    .topbar-link:hover { color: #1a1a1a; }
+    .topbar-link.active { color: #1a1a1a; font-weight: 500; }
+    .topbar-user { font-size: 13px; color: #888; display: flex; align-items: center; gap: 12px; }
+    .topbar-user-name { font-weight: 500; color: #1a1a1a; }
+    .topbar-signout { font-size: 13px; color: #aaa; text-decoration: none; transition: color 0.15s; }
+    .topbar-signout:hover { color: #1a1a1a; }
+
+    /* Desktop layout */
+    .layout { display: flex; max-width: 1000px; margin: 2rem auto; padding: 0 2rem; gap: 1.5rem; }
+    .sidebar { width: 200px; flex-shrink: 0; }
+    .sidebar-card { background: #fff; border: 0.5px solid #e5e5e5; border-radius: 12px; overflow: hidden; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 0.75rem 1rem; font-size: 14px; cursor: pointer; color: #666; border-bottom: 0.5px solid #f0f0f0; transition: background 0.1s; }
+    .nav-item:last-child { border-bottom: none; }
+    .nav-item:hover { background: #f9f9f7; }
+    .nav-item.active { color: #1a1a1a; font-weight: 500; background: #f9f9f7; }
+    .sidebar-user { margin-top: 1rem; padding: 1rem; background: #fff; border: 0.5px solid #e5e5e5; border-radius: 12px; }
+    .user-name { font-size: 13px; font-weight: 500; }
+    .user-plan { font-size: 11px; color: #888; margin-top: 2px; }
+    .main { flex: 1; min-width: 0; }
+
+    /* Mobile tab bar — hidden on desktop */
+    .mobile-tabs { display: none; }
+
+    /* Panels */
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .panel-card { background: #fff; border: 0.5px solid #e5e5e5; border-radius: 12px; overflow: hidden; margin-bottom: 1rem; }
+    .panel-header { padding: 1.25rem 1.5rem; border-bottom: 0.5px solid #e5e5e5; }
+    .panel-title { font-family: 'DM Serif Display', serif; font-size: 20px; }
+    .panel-sub { font-size: 13px; color: #888; margin-top: 4px; font-weight: 300; }
+    .panel-body { padding: 1.25rem 1.5rem; }
+
+    /* Event list */
+    .sport-heading { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #aaa; margin: 1.25rem 0 0.75rem; }
+    .sport-heading:first-child { margin-top: 0; }
+    .event-list { display: flex; flex-direction: column; gap: 8px; }
+    .event-row { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; border: 0.5px solid #e5e5e5; border-radius: 8px; cursor: pointer; transition: border-color 0.15s; }
+    .event-row:hover { border-color: #bbb; }
+    .event-row.selected { border-color: #1a1a1a; background: #fafafa; }
+    .event-row-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .event-name { font-size: 14px; font-weight: 500; }
+    .event-date { font-size: 12px; color: #888; margin-top: 2px; font-weight: 300; }
+
+    /* Soon badge */
+    .soon-badge {
+      display: inline-flex; align-items: center;
+      background: #f0fdf4; color: #166534;
+      border: 0.5px solid #86efac;
+      font-size: 10px; font-weight: 500;
+      padding: 2px 7px; border-radius: 5px;
+      flex-shrink: 0; white-space: nowrap;
+    }
+
+    /* Toggle switch */
+    .toggle { width: 36px; height: 20px; border-radius: 10px; background: #ddd; position: relative; transition: background 0.2s; flex-shrink: 0; }
+    .toggle.on { background: #1a1a1a; }
+    .toggle::after { content: ''; position: absolute; width: 14px; height: 14px; background: #fff; border-radius: 50%; top: 3px; left: 3px; transition: transform 0.2s; }
+    .toggle.on::after { transform: translateX(16px); }
+
+    /* Plan grid */
+    .plan-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .plan-card { border: 0.5px solid #e5e5e5; border-radius: 10px; padding: 1.25rem; }
+    .plan-card.current { border: 2px solid #93c5fd; }
+    .plan-badge { display: inline-block; background: #eff6ff; color: #1d4ed8; font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 6px; margin-bottom: 0.5rem; }
+    .plan-card-name { font-size: 14px; font-weight: 500; }
+    .plan-card-price { font-family: 'DM Serif Display', serif; font-size: 28px; margin: 0.5rem 0 0.1rem; }
+    .plan-card-period { font-size: 11px; color: #888; margin-bottom: 1rem; }
+    .plan-card-features { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+    .plan-card-features li { font-size: 12px; color: #666; display: flex; gap: 6px; font-weight: 300; }
+    .plan-card-features li::before { content: '—'; color: #ccc; flex-shrink: 0; }
+
+    /* Save bar */
+    .save-bar { padding: 1rem 1.5rem; border-top: 0.5px solid #e5e5e5; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .save-status { font-size: 13px; color: #166534; display: none; }
+    .btn-save { background: #1a1a1a; color: #fff; border: none; padding: 10px 24px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: opacity 0.15s; }
+    .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-cancel { background: transparent; color: #888; border: 0.5px solid #ccc; padding: 10px 20px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; }
+
+    /* Notifications panel */
+    .ncg { width: 100%; border-collapse: collapse; }
+    .ncg-header th { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #aaa; padding-bottom: 10px; text-align: center; }
+    .ncg-header th:first-child { text-align: left; }
+    .ncg-row td { padding: 12px 0; border-top: 0.5px solid #f0f0f0; vertical-align: middle; }
+    .ncg-label { flex: 1; }
+    .ncg-name { font-size: 14px; font-weight: 500; }
+    .ncg-hint { font-size: 12px; color: #888; margin-top: 2px; font-weight: 300; }
+    .ncg-cell { text-align: center; width: 72px; }
+
+    /* Loading */
+    .loading { padding: 3rem; text-align: center; color: #aaa; font-size: 14px; }
+
+    /* Email prompt — improved */
+    .not-found-wrap {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 60vh; padding: 2rem;
+    }
+    .not-found-card {
+      background: #fff; border: 0.5px solid #e5e5e5; border-radius: 12px;
+      padding: 2.5rem 2rem; max-width: 400px; width: 100%; text-align: center;
+    }
+    .not-found-icon { font-size: 32px; margin-bottom: 1.25rem; }
+    .not-found-title { font-family: 'DM Serif Display', serif; font-size: 22px; margin-bottom: 0.5rem; }
+    .not-found-sub { font-size: 14px; color: #666; font-weight: 300; line-height: 1.6; margin-bottom: 1.75rem; }
+    .not-found-card input {
+      width: 100%; padding: 12px 14px;
+      border: 0.5px solid #ccc; border-radius: 8px;
+      font-family: 'DM Sans', sans-serif; font-size: 14px;
+      color: #1a1a1a; outline: none; margin-bottom: 10px;
+      transition: border-color 0.15s; text-align: left;
+    }
+    .not-found-card input:focus { border-color: #1a1a1a; }
+    .not-found-card input::placeholder { color: #aaa; }
+    .not-found-back { display: inline-block; margin-top: 1.25rem; font-size: 13px; color: #aaa; text-decoration: none; }
+    .not-found-back:hover { color: #1a1a1a; }
+
+    /* Mobile */
+    @media (max-width: 767px) {
+      .layout { flex-direction: column; margin: 0; padding: 0; gap: 0; }
+
+      /* Hide desktop sidebar */
+      .sidebar { display: none; }
+
+      /* Mobile tab bar */
+      .mobile-tabs {
+        display: flex;
+        background: #fff;
+        border-bottom: 0.5px solid #e5e5e5;
+        position: sticky;
+        top: 56px;
+        z-index: 9;
+      }
+      .mobile-tab {
+        flex: 1; padding: 0.9rem 1rem;
+        font-size: 14px; font-weight: 400; color: #888;
+        text-align: center; cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: color 0.15s, border-color 0.15s;
+        background: none; border-top: none; border-left: none; border-right: none;
+        font-family: 'DM Sans', sans-serif;
+      }
+      .mobile-tab.active { color: #1a1a1a; font-weight: 500; border-bottom-color: #1a1a1a; }
+
+      .main { padding: 1.25rem; }
+
+      .panel-header { padding: 1rem 1.25rem; }
+      .panel-body { padding: 1rem 1.25rem; }
+      .save-bar { padding: 0.875rem 1.25rem; }
+
+      .plan-grid { grid-template-columns: 1fr; }
+
+      .not-found-wrap { min-height: 50vh; padding: 1.5rem; }
+      .not-found-card { padding: 2rem 1.5rem; }
+
+      .topbar { padding: 0 1.25rem; }
+    }
+  </style>
 </head>
-<body data-page="dashboard">
-  <div class="site-shell">
-    <header class="topbar">
-      <a class="brand" href="index.html">
-        <img src="https://coenvanrappard-lgtm.github.io/Fluitsignaal/logo.png" alt="Fluitsignaal logo" />
-        <div>
-          <div class="brand-wordmark">Fluitsignaal</div>
-          <div class="brand-tag">Dashboard</div>
-        </div>
-      </a>
-      <nav class="topnav">
-        <a href="index.html">Home</a>
-        <a class="active" href="dashboard.html">Dashboard</a>
-        <a href="tickets.html">Tickets</a>
-        <a href="amsterdam.html">Amsterdam this weekend</a>
-      </nav>
-    </header>
-
-    <section class="page-hero">
-      <div class="eyebrow">Dashboard</div>
-      <h1>The product view that brings the strands together.</h1>
-      <p>If the website is the source of truth, the dashboard is where the service becomes coherent: sale windows that matter, and the Amsterdam picks that are current right now.</p>
-      <div class="page-subnav">
-        <a href="#dashboard-tickets">Tickets</a>
-        <a href="#dashboard-amsterdam">Amsterdam</a>
-      </div>
-      <div class="summary-strip" id="dashboard-summary"></div>
-    </section>
-
-    <section class="dashboard-grid">
-      <div class="stack">
-        <div id="dashboard-tickets"></div>
-        <div id="dashboard-amsterdam"></div>
-      </div>
-      <div class="stack">
-        <div class="callout" id="dashboard-callout"></div>
-      </div>
-    </section>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="topbar-logo">
+      <img src="logo.png" alt="Fluitsignaal" />
+      <span class="topbar-logo-text">Fluitsignaal</span>
+    </a>
+    <div class="topbar-links">
+      <button class="topbar-link active" id="nav-events" onclick="showPanel('events', this)">My events</button>
+      <button class="topbar-link" id="nav-notifications" onclick="showPanel('notifications', this)">Notifications</button>
+      <button class="topbar-link" id="nav-plan" onclick="showPanel('plan', this)">My plan</button>
+    </div>
+    <div class="topbar-user">
+      <span class="topbar-user-name" id="topbar-user-name"></span>
+      <a href="index.html" class="topbar-signout">← Back to site</a>
+    </div>
   </div>
-  <script src="site.js"></script>
+</div>
+
+<!-- Mobile tab bar (hidden on desktop) -->
+<div class="mobile-tabs">
+  <button class="mobile-tab active" id="mobile-tab-events" onclick="showPanel('events', this, 'mobile-tab-events')">My events</button>
+  <button class="mobile-tab" id="mobile-tab-notifications" onclick="showPanel('notifications', this, 'mobile-tab-notifications')">Notifications</button>
+  <button class="mobile-tab" id="mobile-tab-plan" onclick="showPanel('plan', this, 'mobile-tab-plan')">My plan</button>
+</div>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sidebar-card">
+      <div class="nav-item active" onclick="showPanel('events', this)">🗓 <span>My events</span></div>
+      <div class="nav-item" onclick="showPanel('notifications', this)">🔔 <span>Notifications</span></div>
+      <div class="nav-item" onclick="showPanel('plan', this)">💳 <span>My plan</span></div>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-name" id="user-name">—</div>
+      <div class="user-plan" id="user-plan">—</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="panel active" id="panel-events">
+      <div class="panel-card">
+        <div class="panel-header">
+          <div class="panel-title">My events</div>
+          <div class="panel-sub">Select which events you want day-before and hour-of ticket alerts for. The weekly digest covers all events automatically.</div>
+        </div>
+        <div class="panel-body" id="events-body">
+          <div class="loading">Loading your preferences…</div>
+        </div>
+        <div class="save-bar">
+          <div class="save-status" id="save-status">Saved!</div>
+          <button class="btn-save" id="btn-save" onclick="savePreferences()">Save preferences</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-notifications">
+      <div class="panel-card">
+        <div class="panel-header">
+          <div class="panel-title">Notifications</div>
+          <div class="panel-sub">Choose how and when you want to be notified</div>
+        </div>
+        <div class="panel-body">
+          <table class="ncg">
+            <thead class="ncg-header"><tr>
+              <th></th><th>Email</th><th>SMS</th>
+            </tr></thead>
+            <tbody>
+              <tr class="ncg-row">
+                <td><div class="ncg-name">Day before</div><div class="ncg-hint">Alert the day before a sale opens</div></td>
+                <td class="ncg-cell"><div class="toggle" id="rt-day-before-email" onclick="toggleRt('day-before-email')"></div></td>
+                <td class="ncg-cell"><div class="toggle" id="rt-day-before-sms" onclick="toggleRt('day-before-sms')"></div></td>
+              </tr>
+              <tr class="ncg-row">
+                <td><div class="ncg-name">1 hour before</div><div class="ncg-hint">Alert 1 hour before the sale goes live</div></td>
+                <td class="ncg-cell"><div class="toggle" id="rt-hour-before-email" onclick="toggleRt('hour-before-email')"></div></td>
+                <td class="ncg-cell"><div class="toggle" id="rt-hour-before-sms" onclick="toggleRt('hour-before-sms')"></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="save-bar">
+          <div class="save-status" id="notif-save-status">Saved!</div>
+          <button class="btn-save" id="btn-save-notif" onclick="saveNotifications()">Save preferences</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-plan">
+      <div class="panel-card">
+        <div class="panel-header">
+          <div class="panel-title">My plan</div>
+          <div class="panel-sub" id="plan-sub">—</div>
+        </div>
+        <div class="panel-body">
+          <div class="plan-grid">
+            <div class="plan-card" id="plan-card-free">
+              <div class="plan-card-name">Free</div>
+              <div class="plan-card-price">€0</div>
+              <div class="plan-card-period">free to use</div>
+              <ul class="plan-card-features"><li>Weekly digest — all events</li><li>Email alerts</li><li>Day-before &amp; hour reminders</li></ul>
+            </div>
+            <div class="plan-card" id="plan-card-pro">
+              <div class="plan-card-name">Pro</div>
+              <div class="plan-card-price">€7</div>
+              <div class="plan-card-period">per month</div>
+              <ul class="plan-card-features"><li>Unlimited events</li><li>Email + SMS alerts</li><li>All reminder types</li><li>Lottery registration reminders</li></ul>
+            </div>
+          </div>
+        </div>
+        <div class="save-bar">
+          <div id="upgrade-wrap" style="display:none;">
+            <button class="btn-save" id="btn-upgrade" onclick="startCheckout()">Upgrade to Pro — €7/mo</button>
+          </div>
+          <div id="pro-wrap" style="display:none;">
+            <span style="font-size:13px;color:#166534;font-weight:500;">You're on Pro</span>
+          </div>
+          <button class="btn-cancel" id="btn-contact-plan">Contact us to change plan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwP9GisrJfJO7_6IYiovEBBaAKNz9kUeVCPhgupX2QKAw7u7qqv5N5-zG1oYqaCD4zT/exec';
+
+const EVENTS = {
+  tennis: {
+    label: '🎾 Tennis',
+    items: [
+      { id: 'french_open', name: 'French Open', date: 'Sale opens March 31, 2026', saleDate: '2026-03-31' },
+      { id: 'wimbledon', name: 'Wimbledon', date: 'Ballot opens September 2026', saleDate: null },
+      { id: 'australian_open', name: 'Australian Open', date: 'Sale opens approx. October 2026', saleDate: null },
+      { id: 'us_open', name: 'US Open', date: 'Sale opens approx. April 2026', saleDate: '2026-04-15' },
+      { id: 'rotterdam_open', name: 'Rotterdam Open', date: 'Sale opens approx. June 2026', saleDate: null },
+      { id: 'libema_open', name: 'Libema Open', date: 'Date TBA', saleDate: null },
+      { id: 'davis_cup', name: 'Davis Cup', date: 'Date TBA', saleDate: null },
+    ]
+  },
+  football: {
+    label: '⚽ Football',
+    items: [
+      { id: 'ajax', name: 'Ajax', date: 'Season tickets June 2026', saleDate: null },
+      { id: 'feyenoord', name: 'Feyenoord', date: 'Season tickets June 2026', saleDate: null },
+      { id: 'psv', name: 'PSV', date: 'Season tickets June 2026', saleDate: null },
+      { id: 'nederlands_elftal', name: 'Nederlands Elftal', date: 'Via knvb.nl', saleDate: null },
+      { id: 'world_cup', name: 'WK 2026', date: 'Resale opens April 2, 2026', saleDate: '2026-04-02' },
+      { id: 'euro', name: 'EK', date: 'Date TBA', saleDate: null },
+      { id: 'club_world_cup', name: 'WK Clubs', date: 'Date TBA', saleDate: null },
+    ]
+  },
+  golf: {
+    label: '⛳ Golf',
+    items: [
+      { id: 'ryder_cup', name: 'Ryder Cup', date: 'Ballot open at rydercup.com', saleDate: null },
+      { id: 'solheim_cup', name: 'Solheim Cup', date: 'Date TBA', saleDate: null },
+      { id: 'the_open', name: 'The Open Championship', date: 'Sale opens approx. March 2026', saleDate: null },
+      { id: 'klm_open', name: 'KLM Open', date: 'Date TBA', saleDate: null },
+    ]
+  },
+  rugby: {
+    label: '🏉 Rugby',
+    items: [
+      { id: 'six_nations', name: 'Six Nations', date: 'Sale opens approx. November 2026', saleDate: null },
+    ]
+  },
+  hockey: {
+    label: '🏑 Hockey',
+    items: [
+      { id: 'hockey_ek', name: 'Hockey EK', date: 'Date TBA', saleDate: null },
+      { id: 'hockey_wk', name: 'Hockey WK', date: 'Date TBA', saleDate: null },
+      { id: 'hockey_hoofdklasse', name: 'Hoofdklasse Play-offs', date: 'Sale opens approx. March 2026', saleDate: '2026-03-25' },
+    ]
+  },
+  spotlight: {
+    label: '🔦 Spotlight',
+    items: [
+      { id: 'urban_sports_week_amsterdam', name: 'Urban Sports Week Amsterdam', date: 'Mei 2026 · NDSM, Amsterdam', saleDate: '2026-05-15' },
+      { id: 'fiba_3x3', name: 'FIBA 3x3 World Tour Amsterdam Masters', date: 'Mei 2026 · Amsterdam', saleDate: '2026-05-15' },
+      { id: '3x3nl_tour_finals', name: '3x3NL Tour Finals Amsterdam', date: '25–26 jul 2026 · Amsterdam', saleDate: '2026-07-25' },
+      { id: 'museumplein_polo', name: 'Museumplein Polo Amsterdam', date: '25–27 sep 2026 · Gratis', saleDate: null },
+      { id: 'premier_padel_rotterdam', name: 'Premier Padel Rotterdam', date: '27 sep – 4 okt 2026 · Rotterdam Ahoy', saleDate: null },
+      { id: 'amstel_tigers', name: 'Amstel Tigers IJshockey', date: 'Seizoen 2026–2027 · Amsterdam', saleDate: null },
+      { id: 'tilburg_trappers', name: 'Tilburg Trappers IJshockey', date: 'Seizoen 2026–2027 · Tilburg', saleDate: null },
+      { id: 'world_sprint_championships', name: 'WK Sprint Schaatsen', date: '2027 · Thialf, Heerenveen', saleDate: null },
+      { id: 'jumping_amsterdam', name: 'Jumping Amsterdam', date: 'Januari 2027 · RAI Amsterdam', saleDate: null },
+      { id: 'hollands_strongest_man', name: "Holland's Strongest Man", date: 'Datum onbekend', saleDate: null },
+      { id: 'beachvolleybal_eredivisie', name: 'Beachvolleybal Eredivisie', date: 'Zomer 2026', saleDate: null },
+      { id: 'beachlife_volleyball_scheveningen', name: 'Summer BeachLife Volleyball Scheveningen', date: 'Zomer 2026 · Scheveningen', saleDate: null },
+    ]
+  }
+};
+
+let userEmail = null;
+let userPlan = 'free';
+
+const REMINDER_MAP = [
+  { id: 'day-before-email',  dbKey: 'day_before_email',  type: 'day_before',  channel: 'email' },
+  { id: 'day-before-sms',    dbKey: 'day_before_sms',    type: 'day_before',  channel: 'sms'   },
+  { id: 'hour-before-email', dbKey: 'hour_before_email', type: 'hour_before', channel: 'email' },
+  { id: 'hour-before-sms',   dbKey: 'hour_before_sms',   type: 'hour_before', channel: 'sms'   },
+];
+
+function toggleRt(id) {
+  document.getElementById('rt-' + id).classList.toggle('on');
+}
+
+function renderNotifications(notifMethod, remindersArr) {
+  const isNewFormat = remindersArr.some(r => r.includes('_email') || r.includes('_sms'));
+  REMINDER_MAP.forEach(({ id, dbKey, type, channel }) => {
+    let on;
+    if (isNewFormat) {
+      on = remindersArr.includes(dbKey);
+    } else {
+      const typeOn = remindersArr.includes(type);
+      const m = notifMethod || 'email';
+      on = typeOn && (channel === 'email' ? ['email','both'].includes(m) : ['sms','both'].includes(m));
+    }
+    document.getElementById('rt-' + id).classList.toggle('on', on);
+  });
+}
+
+async function saveNotifications() {
+  const btn = document.getElementById('btn-save-notif');
+  btn.disabled = true; btn.textContent = 'Saving…';
+  const reminders = REMINDER_MAP.filter(({ id }) => document.getElementById('rt-' + id).classList.contains('on')).map(({ dbKey }) => dbKey).join('|');
+  const hasSms = REMINDER_MAP.some(({ id, channel }) => channel === 'sms' && document.getElementById('rt-' + id).classList.contains('on'));
+  const hasEmail = REMINDER_MAP.some(({ id, channel }) => channel === 'email' && document.getElementById('rt-' + id).classList.contains('on'));
+  const notifications = hasSms && hasEmail ? 'both' : hasSms ? 'sms' : 'email';
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'update_notifications', email: userEmail, notifications, reminders })
+    });
+    const status = document.getElementById('notif-save-status');
+    status.style.display = 'block';
+    setTimeout(() => { status.style.display = 'none'; }, 3000);
+  } catch(e) { alert('Something went wrong. Please try again.'); }
+  btn.disabled = false; btn.textContent = 'Save preferences';
+}
+
+const TODAY = new Date();
+const SOON_DAYS = 30;
+
+function isSoon(dateStr) {
+  if (!dateStr) return false;
+  const d = new Date(dateStr);
+  const diff = (d - TODAY) / (1000 * 60 * 60 * 24);
+  return diff >= 0 && diff <= SOON_DAYS;
+}
+
+function showPanel(name, el, mobileTabId) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item, .topbar-link, .mobile-tab').forEach(n => n.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  if (el) el.classList.add('active');
+  document.getElementById('nav-' + name)?.classList.add('active');
+  if (mobileTabId) document.getElementById(mobileTabId)?.classList.add('active');
+}
+
+function toggleEvent(row) {
+  row.classList.toggle('selected');
+  row.querySelector('.toggle').classList.toggle('on');
+}
+
+function renderEvents(selectedIds) {
+  const body = document.getElementById('events-body');
+  let html = '';
+  for (const sport of Object.values(EVENTS)) {
+    html += `<div class="sport-heading">${sport.label}</div><div class="event-list">`;
+    for (const e of sport.items) {
+      const sel = selectedIds.includes(e.id);
+      const soonBadge = isSoon(e.saleDate) ? `<span class="soon-badge">${'Soon'}</span>` : '';
+      html += `<div class="event-row${sel ? ' selected' : ''}" data-id="${e.id}" onclick="toggleEvent(this)">
+        <div class="event-row-left">
+          <div>
+            <div class="event-name">${e.name}</div>
+            <div class="event-date">${e.date}</div>
+          </div>
+          ${soonBadge}
+        </div>
+        <div class="toggle${sel ? ' on' : ''}"></div>
+      </div>`;
+    }
+    html += '</div>';
+  }
+  body.innerHTML = html;
+}
+
+function hideAllPanels() {
+  document.querySelector('.layout').style.display = 'none';
+  document.querySelector('.mobile-tabs').style.display = 'none';
+  const navLinks = document.querySelector('.topbar-links');
+  if (navLinks) navLinks.style.display = 'none';
+}
+
+function showEmailPrompt(errorMsg) {
+  document.querySelectorAll('.not-found-wrap').forEach(el => el.remove());
+  hideAllPanels();
+  const body = document.body;
+  const wrap = document.createElement('div');
+  wrap.className = 'not-found-wrap';
+  wrap.innerHTML = `
+    <div class="not-found-card">
+      <div class="not-found-icon">🔔</div>
+      <div class="not-found-title">Access your alerts</div>
+      <p class="not-found-sub">${errorMsg || 'Enter your email to view your events and preferences.'}</p>
+      <input type="email" id="email-input" placeholder="your@email.com" onkeydown="if(event.key==='Enter')loadByEmail()" />
+      <button class="btn-save" style="width:100%;margin-top:4px;" onclick="loadByEmail()">Load my settings</button>
+      <a href="index.html" class="not-found-back">No account? Sign up for free</a>
+    </div>`;
+  body.appendChild(wrap);
+}
+
+async function loadByEmail() {
+  const input = document.getElementById('email-input').value.trim();
+  if (!input) return;
+  window.location.href = window.location.pathname + '?email=' + encodeURIComponent(input);
+}
+
+async function loadUser() {
+  const params = new URLSearchParams(window.location.search);
+  userEmail = params.get('email');
+  if (!userEmail) { showEmailPrompt(); return; }
+
+  try {
+    const res = await fetch(SCRIPT_URL + '?email=' + encodeURIComponent(userEmail), { credentials: 'omit' });
+    const text = await res.text();
+    const data = JSON.parse(text);
+
+    if (!data.found) {
+      showEmailPrompt('This email address was not found. Check your address or sign up.');
+      return;
+    }
+
+    const user = data.user;
+    userPlan = user.plan || 'free';
+    document.getElementById('user-name').textContent = user.name || userEmail;
+    document.getElementById('topbar-user-name').textContent = (user.name || userEmail).split(' ')[0];
+    document.getElementById('user-plan').textContent = userPlan + ' plan';
+    document.getElementById('plan-sub').textContent = `You're on the ${userPlan} plan`;
+    document.getElementById('plan-card-' + userPlan)?.classList.add('current');
+    if (userPlan === 'free') {
+      document.getElementById('upgrade-wrap').style.display = 'block';
+      document.getElementById('btn-contact-plan').style.display = 'none';
+    } else {
+      document.getElementById('pro-wrap').style.display = 'block';
+      document.getElementById('btn-contact-plan').style.display = 'none';
+    }
+    if (params.get('upgraded') === '1') {
+      document.getElementById('plan-sub').textContent = 'Welcome to Pro! Your subscription has been upgraded.';
+      showPanel('plan', document.getElementById('nav-plan'));
+    }
+    const selected = user.events ? user.events.split('|').filter(Boolean) : [];
+    renderEvents(selected);
+    const reminders = user.reminders ? user.reminders.split('|').filter(Boolean) : ['weekly','day_before'];
+    renderNotifications(user.notifications || 'email', reminders);
+  } catch(e) {
+    console.error('loadUser error:', e);
+    showEmailPrompt('Something went wrong. Please try again.');
+  }
+}
+
+async function savePreferences() {
+  const btn = document.getElementById('btn-save');
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+
+  const selected = [...document.querySelectorAll('.event-row.selected')].map(r => r.dataset.id);
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'update_events', email: userEmail, events: selected.join('|') })
+    });
+    const status = document.getElementById('save-status');
+    status.style.display = 'block';
+    setTimeout(() => { status.style.display = 'none'; }, 3000);
+  } catch(e) {
+    alert('Something went wrong. Please try again.');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Save preferences';
+}
+
+async function startCheckout() {
+  const btn = document.getElementById('btn-upgrade');
+  btn.textContent = 'Redirecting…';
+  btn.disabled = true;
+  try {
+    const res = await fetch(SCRIPT_URL + '?action=create_checkout&email=' + encodeURIComponent(userEmail), { credentials: 'omit' });
+    const text = await res.text();
+    let data;
+    try { data = JSON.parse(text); } catch(_) {
+      alert('Unexpected response:\n' + text.slice(0, 300));
+      btn.textContent = 'Upgrade to Pro — €7/mo';
+      btn.disabled = false;
+      return;
+    }
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      alert('Error: ' + (data.error || JSON.stringify(data)));
+      btn.textContent = 'Upgrade to Pro — €7/mo';
+      btn.disabled = false;
+    }
+  } catch(e) {
+    alert('Fetch failed: ' + e.message);
+    btn.textContent = 'Upgrade to Pro — €7/mo';
+    btn.disabled = false;
+  }
+}
+
+loadUser();
+</script>
 </body>
 </html>

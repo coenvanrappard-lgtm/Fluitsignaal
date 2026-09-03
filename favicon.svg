@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Orange background -->
+  <circle cx="32" cy="32" r="30" fill="#f04e0f"/>
+  <!-- Whistle body -->
+  <ellipse cx="29" cy="34" rx="14" ry="10" fill="white"/>
+  <!-- Mouthpiece tube -->
+  <rect x="40" y="30" width="14" height="8" rx="4" fill="white"/>
+  <!-- Ring (loop for lanyard) -->
+  <circle cx="16" cy="34" r="6" fill="white"/>
+  <circle cx="16" cy="34" r="3" fill="#f04e0f"/>
+  <!-- Air slot on top -->
+  <rect x="19" y="27" width="16" height="5" rx="2" fill="#f04e0f"/>
+</svg>

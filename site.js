@@ -1,3 +1,6 @@
+const TMDB_API_KEY = "52d74d1b6032d1a77dccefde6d442e72";
+const TMDB_IMG = "https://image.tmdb.org/t/p/w200";
+
 function formatDateShort(dateStr) {
   if (!dateStr) return "";
   const [year, month, day] = dateStr.split("-");
@@ -118,17 +121,22 @@ function featuredPanel(eyebrow, title, meta, body, buttonLabel, buttonHref, butt
     </article>`;
 }
 
-function mountHome(events, weekend, agenda) {
+function mountHome(events, weekend, agenda, moviesFeed) {
   const live = events.filter(e => e.status === "on_sale" || (e.sale_start && parseDate(e.sale_start) <= new Date()));
   const action = events.filter(e => e.status === "action_required");
   const upcoming = events.filter(e => e.status === "coming_soon" && e.sale_start).sort((a, b) => a.sale_start.localeCompare(b.sale_start));
   const spotlight = events.find(e => e.spotlight && e.spotlight_description) || upcoming[0] || live[0];
   const amsterdamPick = weekend[0] || agenda[0];
+  const moviePick = (moviesFeed?.cineville || [])[0] || (moviesFeed?.trending || [])[0];
 
   byId("hero-stats").innerHTML = `
     <div class="stat">
       <div class="stat-label">Tickets</div>
       <div class="stat-value">${live.length} live now, ${action.length} needing setup, ${upcoming.length} coming up.</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Movies</div>
+      <div class="stat-value">A dedicated page for Cineville picks and trending films, separate from ticket alerts.</div>
     </div>
     <div class="stat">
       <div class="stat-label">Amsterdam</div>
@@ -144,6 +152,16 @@ function mountHome(events, weekend, agenda) {
           <h3>${escapeHtml(spotlight.name)}</h3>
           <div class="meta">${escapeHtml(formatRange(spotlight.event_start, spotlight.event_end) || `Sale opens ${formatDateShort(spotlight.sale_start)}`)}</div>
           <p>${escapeHtml(blurb(spotlight.description || spotlight.spotlight_description, 150))}</p>
+        </div>
+      </article>` : ""}
+    ${moviePick ? `
+      <article class="panel highlight-card">
+        ${moviePick.image ? `<img src="${escapeHtml(moviePick.image)}" alt="${escapeHtml(moviePick.title)}" />` : ""}
+        <div class="content">
+          <div class="chip">Movies</div>
+          <h3>${escapeHtml(moviePick.title)}</h3>
+          <div class="meta">${escapeHtml(moviePick.meta || "Film pick")}</div>
+          <p>${escapeHtml(blurb(moviePick.description, 150))}</p>
         </div>
       </article>` : ""}
     ${amsterdamPick ? `
@@ -254,6 +272,114 @@ function renderTickets(events) {
     </div>`;
 }
 
+async function fetchTmdbTrending() {
+  const response = await fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=${TMDB_API_KEY}&language=en-US`);
+  if (!response.ok) throw new Error("TMDB failed");
+  const data = await response.json();
+  return (data.results || []).slice(0, 4);
+}
+
+async function fetchCinevilleFeatured() {
+  const response = await fetch("https://www.cineville.nl/films");
+  if (!response.ok) throw new Error("Cineville failed");
+  const html = await response.text();
+  const match = html.match(/id="__NEXT_DATA__"[^>]*>(.*?)<\/script>/s);
+  if (!match) throw new Error("Cineville payload missing");
+  const data = JSON.parse(match[1]);
+  return (data.props.pageProps.featuredFilms || []).slice(0, 4);
+}
+
+async function loadMoviesFeed() {
+  const response = await fetch("movies_feed.json");
+  if (!response.ok) throw new Error("movies_feed.json missing");
+  return response.json();
+}
+
+function movieRowHtml(movie) {
+  const image = movie.image ? `<img src="${escapeHtml(movie.image)}" alt="${escapeHtml(movie.title)}" />` : "";
+  const imdbLink = movie.imdb_link || movie.imdbLink || "";
+  const rating = movie.imdb ? `<a class="imdb-badge" href="${escapeHtml(imdbLink || "#")}" target="_blank" rel="noreferrer">${escapeHtml(movie.imdb)}</a>` : "";
+  const linkLabel = movie.link_label || movie.linkLabel || "More info";
+  const trailerBtn = movie.trailer_url
+    ? `<a class="btn-trailer" href="${escapeHtml(movie.trailer_url)}" target="_blank" rel="noreferrer">▶ Trailer</a>`
+    : "";
+  return `
+    <article class="panel movie-row">
+      <div>${image}</div>
+      <div>
+        <h3 style="font-size:20px;margin:0;"><a href="${escapeHtml(movie.link || "#")}" target="_blank" rel="noreferrer" style="text-decoration:none;">${escapeHtml(movie.title)}</a></h3>
+        <div class="movie-meta">${escapeHtml(movie.meta || "")}</div>
+        <div class="body" style="margin-top:8px;">${escapeHtml(blurb(movie.description, 120))}</div>
+        <div class="movie-links">
+          <a href="${escapeHtml(movie.link || "#")}" target="_blank" rel="noreferrer">${escapeHtml(linkLabel)} →</a>
+          ${trailerBtn}
+          ${imdbLink ? `<a class="movie-imdb-link" href="${escapeHtml(imdbLink)}" target="_blank" rel="noreferrer">IMDb page →</a>` : ""}
+        </div>
+      </div>
+      <div class="rating">${rating}</div>
+    </article>`;
+}
+
+async function renderMovies() {
+  let cineville = [];
+  let trending = [];
+  let feedInfo = {};
+
+  try {
+    feedInfo = await loadMoviesFeed();
+    cineville = feedInfo.cineville || [];
+    trending = feedInfo.trending || [];
+  } catch (error) {
+    try {
+      const featured = await fetchCinevilleFeatured();
+      cineville = featured.map(film => ({
+        title: film.title || "",
+        meta: [film.releaseYear, film.duration ? `${film.duration} min` : ""].filter(Boolean).join(" · "),
+        description: film.shortDescription || film.description || "",
+        image: film.poster?.url ? `${film.poster.url}?w=128&auto=format` : (film.cover?.url || ""),
+        link: film.slug ? `https://www.cineville.nl/films/${film.slug}` : "https://www.cineville.nl/films",
+        linkLabel: "View on Cineville"
+      }));
+    } catch (innerError) {
+      cineville = [];
+    }
+
+    try {
+      const results = await fetchTmdbTrending();
+      trending = results.map(movie => ({
+        title: movie.title || "",
+        meta: [movie.release_date ? movie.release_date.slice(0, 4) : "", movie.runtime ? `${movie.runtime} min` : ""].filter(Boolean).join(" · "),
+        description: movie.overview || "",
+        image: movie.poster_path ? `${TMDB_IMG}${movie.poster_path}` : "",
+        link: `https://www.themoviedb.org/movie/${movie.id}`,
+        linkLabel: "View film",
+        imdb: movie.vote_average ? `TMDB ${movie.vote_average.toFixed(1)}` : ""
+      }));
+    } catch (innerError) {
+      trending = [];
+    }
+  }
+
+  byId("movies-cineville").innerHTML = cineville.length
+    ? cineville.map(movieRowHtml).join("")
+    : `<div class="panel empty-state">Cineville picks could not be loaded in the browser right now.</div>`;
+
+  byId("movies-trending").innerHTML = trending.length
+    ? trending.map(movieRowHtml).join("")
+    : `<div class="panel empty-state">Trending films could not be loaded right now.</div>`;
+
+  byId("movies-summary").innerHTML = [
+    summaryCard("Cineville", String(cineville.length), "Editorial picks that feel worth your time."),
+    summaryCard("Trending", String(trending.length), "The films with the most attention this week."),
+    summaryCard("Updated", formatGeneratedAt(feedInfo.generated_at) || "Live", "Static site feed with browser fallback.")
+  ].join("");
+
+  const updated = formatGeneratedAt(feedInfo.generated_at);
+  byId("movies-callout").innerHTML = updated
+    ? `<strong>Data freshness:</strong> this page is fed from a local movie snapshot generated on ${escapeHtml(updated)}. That is a better fit for a static site than relying entirely on live browser fetches.`
+    : `<strong>Data freshness:</strong> this page can fall back to live browser fetches, but the preferred setup is to keep \`movies_feed.json\` updated and let the website read from that.`;
+}
+
 function renderAmsterdam(weekend, agenda) {
   const today = todayStart();
   const upcomingCityItems = agenda
@@ -309,7 +435,7 @@ function renderAmsterdam(weekend, agenda) {
     : `<strong>Data gap:</strong> the weekend picks are current, but the longer-range Amsterdam agenda needs refreshing. Once that feed is updated, this page becomes much more useful than squeezing everything into email.`;
 }
 
-function renderDashboard(events, weekend, agenda) {
+function renderDashboard(events, weekend, agenda, moviesFeed) {
   const now = todayStart();
   const live = events
     .filter(event => event.status === "on_sale" || (event.sale_start && parseDate(event.sale_start) <= now && event.status !== "date_unknown"))
@@ -318,6 +444,7 @@ function renderDashboard(events, weekend, agenda) {
     .filter(event => event.status === "action_required")
     .sort((a, b) => (a.sale_start || "9999-12-31").localeCompare(b.sale_start || "9999-12-31"));
   const weekendPick = weekend[0];
+  const moviePick = (moviesFeed?.cineville || [])[0] || (moviesFeed?.trending || [])[0];
   const cityCount = agenda.filter(item => item.event_start).filter(item => {
     const end = parseDate(item.event_end || item.event_start);
     return end && end >= now;
@@ -325,6 +452,7 @@ function renderDashboard(events, weekend, agenda) {
 
   byId("dashboard-summary").innerHTML = [
     summaryCard("Tickets", `${live.length} live`, `${setup.length} still need setup.`),
+    summaryCard("Movies", `${(moviesFeed?.cineville || []).length + (moviesFeed?.trending || []).length} picks`, "Cineville plus what is trending."),
     summaryCard("Amsterdam", `${weekend.length} weekend picks`, `${cityCount} additional city dates still relevant.`)
   ].join("");
 
@@ -367,6 +495,28 @@ function renderDashboard(events, weekend, agenda) {
       </div>`
     : `<div class="panel empty-state">No ticket events are loaded yet.</div>`;
 
+  byId("dashboard-movies").innerHTML = moviePick
+    ? `
+      <div class="section-heading">
+        <div class="eyebrow">Movies</div>
+        <h2>Something worth opening this week.</h2>
+        <p>The film side works best when it keeps a clear editorial point of view instead of acting like a cinema listings page.</p>
+      </div>
+      ${movieRowHtml(moviePick)}
+      <div class="panel compact-list">
+        <table>
+          ${(moviesFeed?.trending || []).slice(0, 4).map(movie => `
+            <tr>
+              <td>
+                <div style="font-size:14px;font-weight:600;">${escapeHtml(movie.title)}</div>
+                <div class="meta">${escapeHtml(movie.meta || "")}</div>
+              </td>
+              <td style="text-align:right;font-size:13px;"><a class="inline-link" href="${escapeHtml(movie.link || 'movies.html')}" target="_blank" rel="noreferrer">${escapeHtml(movie.link_label || "Open")} →</a></td>
+            </tr>`).join("")}
+        </table>
+      </div>`
+    : `<div class="panel empty-state">Movie picks are not available right now.</div>`;
+
   byId("dashboard-amsterdam").innerHTML = weekendPick
     ? `
       <div class="section-heading">
@@ -392,23 +542,27 @@ function renderDashboard(events, weekend, agenda) {
 
 async function init() {
   const page = document.body.dataset.page;
-  const [events, weekend, agenda] = await Promise.all([
+  const [events, weekend, agenda, moviesFeed] = await Promise.all([
     loadJson("events_db.json").catch(() => []),
     loadJson("weekend_picks.json").catch(() => []),
-    loadJson("amsterdam_agenda.json").catch(() => [])
+    loadJson("amsterdam_agenda.json").catch(() => []),
+    loadJson("movies_feed.json").catch(() => ({ cineville: [], trending: [] }))
   ]);
 
   if (page === "home") {
-    mountHome(events, weekend, agenda);
+    mountHome(events, weekend, agenda, moviesFeed);
   }
   if (page === "tickets") {
     renderTickets(events);
+  }
+  if (page === "movies") {
+    renderMovies();
   }
   if (page === "amsterdam") {
     renderAmsterdam(weekend, agenda);
   }
   if (page === "dashboard") {
-    renderDashboard(events, weekend, agenda);
+    renderDashboard(events, weekend, agenda, moviesFeed);
   }
 }
 
