@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fluitsignaal Amsterdam</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="site.css" />
+</head>
+<body data-page="amsterdam">
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="brand" href="index.html">
+        <img src="https://coenvanrappard-lgtm.github.io/Fluitsignaal/logo.png" alt="Fluitsignaal logo" />
+        <div>
+          <div class="brand-wordmark">Fluitsignaal</div>
+          <div class="brand-tag">Amsterdam this weekend</div>
+        </div>
+      </a>
+      <nav class="topnav">
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="tickets.html">Tickets</a>
+        <a class="active" href="amsterdam.html">Amsterdam this weekend</a>
+      </nav>
+    </header>
+
+    <section class="page-hero">
+      <div class="eyebrow">Amsterdam this weekend</div>
+      <h1>What is worth leaving the house for.</h1>
+      <p>This page is where the city guide becomes its own product. Weekend picks should feel selective and useful, with room to browse beyond whatever happened to fit inside the weekly email.</p>
+      <div class="page-subnav">
+        <a href="#weekend-picks">This weekend</a>
+        <a href="#city-guide">City guide</a>
+      </div>
+      <div class="summary-strip" id="amsterdam-summary"></div>
+    </section>
+
+    <section class="section" id="weekend-picks">
+      <div class="section-heading">
+        <div class="eyebrow">This weekend</div>
+        <h2>The strongest Amsterdam picks over the next few days.</h2>
+      </div>
+      <div class="section-list" id="amsterdam-weekend"></div>
+    </section>
+
+    <section class="section" id="city-guide">
+      <div class="section-heading">
+        <div class="eyebrow">City guide</div>
+        <h2>More dates coming up in Amsterdam.</h2>
+      </div>
+      <div id="amsterdam-city"></div>
+    </section>
+
+    <section class="section">
+      <div class="callout" id="amsterdam-callout"></div>
+    </section>
+  </div>
+  <script src="site.js"></script>
+</body>
+</html>

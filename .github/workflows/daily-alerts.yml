@@ -1,0 +1,24 @@
+name: Daily ticket alerts
+
+on:
+  schedule:
+    # 07:00 UTC = 09:00 in Amsterdam during CEST (summer), 08:00 during CET (winter).
+    # GitHub Actions cron doesn't follow DST, so this drifts by an hour twice a year.
+    - cron: "0 7 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  send-alerts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - run: python3 send_alerts.py
+        env:
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          TWILIO_SID: ${{ secrets.TWILIO_SID }}
+          TWILIO_TOKEN: ${{ secrets.TWILIO_TOKEN }}
+          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}

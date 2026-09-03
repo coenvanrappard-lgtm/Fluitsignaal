@@ -1,0 +1,101 @@
+[
+  {
+    "id": "amsterdam_sail_2025",
+    "name": "SAIL Amsterdam 2025",
+    "category": "Culture",
+    "description": "The world's largest free nautical event returns to Amsterdam — hundreds of tall ships, naval vessels and historic boats in the IJ harbour. Only happens every 5 years.",
+    "event_start": "2025-08-20",
+    "event_end": "2025-08-24",
+    "location": "IJ-haven, Amsterdam",
+    "ticket_url": "https://sail.nl",
+    "status": "coming_soon"
+  },
+  {
+    "id": "de_parade_amsterdam_2025",
+    "name": "De Parade Amsterdam",
+    "category": "Theatre",
+    "description": "Travelling theatre festival in Martin Luther King Park. Small stages, big atmosphere — theatre, cabaret, music and food all in one garden.",
+    "event_start": "2025-08-08",
+    "event_end": "2025-08-31",
+    "location": "Martin Luther King Park, Amsterdam",
+    "ticket_url": "https://deparade.nl",
+    "status": "coming_soon"
+  },
+  {
+    "id": "amsterdam_light_festival_2025",
+    "name": "Amsterdam Light Festival",
+    "category": "Culture",
+    "description": "Light art installations along the canals — best experienced by boat or on foot through the city centre. One of Amsterdam's best winter events.",
+    "event_start": "2025-11-27",
+    "event_end": "2026-01-18",
+    "location": "Amsterdam canals",
+    "ticket_url": "https://amsterdamlightfestival.com",
+    "status": "coming_soon"
+  },
+  {
+    "id": "museumplein_ice_rink_2025",
+    "name": "Museumplein Ice Rink opens",
+    "category": "Seasonal",
+    "description": "Amsterdam's most atmospheric ice rink opens in front of the Rijksmuseum. Worth going early in the season before it gets crowded.",
+    "event_start": "2025-12-05",
+    "event_end": "2026-01-25",
+    "location": "Museumplein, Amsterdam",
+    "ticket_url": "",
+    "status": "coming_soon"
+  },
+  {
+    "id": "carre_show_1",
+    "name": "Carré: fill in show",
+    "category": "Theatre",
+    "description": "Fill in description — what makes this one worth going to.",
+    "event_start": "",
+    "event_end": "",
+    "location": "Koninklijk Theater Carré, Amsterdam",
+    "ticket_url": "https://carre.nl",
+    "status": "date_unknown"
+  },
+  {
+    "id": "jort_kelder_podcast",
+    "name": "Jort Kelder Podcast Live",
+    "category": "Podcast / Talk",
+    "description": "Live walk-in recording of Jort Kelder's podcast. Fill in the specific date and guest when announced.",
+    "event_start": "",
+    "event_end": "",
+    "location": "Amsterdam",
+    "ticket_url": "",
+    "status": "date_unknown"
+  },
+  {
+    "id": "rijksmuseum_expo_1",
+    "name": "Rijksmuseum: fill in exhibition",
+    "category": "Museum",
+    "description": "Fill in the exhibition name and a line on why it's worth going.",
+    "event_start": "",
+    "event_end": "",
+    "location": "Rijksmuseum, Amsterdam",
+    "ticket_url": "https://rijksmuseum.nl",
+    "status": "date_unknown"
+  },
+  {
+    "id": "stedelijk_expo_1",
+    "name": "Stedelijk Museum: fill in exhibition",
+    "category": "Museum",
+    "description": "Fill in the exhibition name and a line on why it's worth going.",
+    "event_start": "",
+    "event_end": "",
+    "location": "Stedelijk Museum, Amsterdam",
+    "ticket_url": "https://stedelijk.nl",
+    "status": "date_unknown"
+  },
+  {
+    "id": "film_premiere_1",
+    "name": "Film: fill in title",
+    "category": "Film",
+    "description": "Fill in why this premiere is worth catching in the cinema.",
+    "event_start": "",
+    "event_end": "",
+    "location": "Amsterdam",
+    "ticket_url": "",
+    "status": "date_unknown"
+  }
+]

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fluitsignaal Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: #f9f9f7; color: #1a1a1a; }
+    .topbar { background: #fff; border-bottom: 0.5px solid #e5e5e5; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; height: 56px; position: sticky; top: 0; z-index: 10; }
+    .topbar-logo { font-family: 'DM Serif Display', serif; font-size: 17px; }
+    .topbar-actions { display: flex; gap: 10px; }
+    .btn { padding: 8px 18px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; border: none; }
+    .btn-primary { background: #1a1a1a; color: #fff; }
+    .btn-secondary { background: #fff; color: #1a1a1a; border: 0.5px solid #ccc; }
+    .btn-danger { background: #fff; color: #dc2626; border: 0.5px solid #fca5a5; }
+    .btn-small { padding: 5px 12px; font-size: 12px; border-radius: 6px; }
+    .main { max-width: 1200px; margin: 2rem auto; padding: 0 2rem; }
+    .filters { display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; align-items: center; }
+    .filter-chip { padding: 6px 14px; border: 0.5px solid #e5e5e5; border-radius: 20px; font-size: 13px; cursor: pointer; color: #888; background: #fff; }
+    .filter-chip.active { border-color: #1a1a1a; color: #1a1a1a; font-weight: 500; }
+    .search { padding: 7px 12px; border: 0.5px solid #e5e5e5; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; width: 200px; background: #fff; }
+    table { width: 100%; border-collapse: collapse; background: #fff; border: 0.5px solid #e5e5e5; border-radius: 12px; overflow: hidden; }
+    th { text-align: left; padding: 0.75rem 1rem; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #aaa; border-bottom: 0.5px solid #e5e5e5; background: #fafafa; }
+    td { padding: 0.75rem 1rem; font-size: 13px; border-bottom: 0.5px solid #f0f0f0; vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafafa; }
+    .sport-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; }
+    .sport-tennis { background: #fef9c3; color: #854d0e; }
+    .sport-football { background: #dcfce7; color: #166534; }
+    .sport-golf { background: #f0fdf4; color: #15803d; }
+    .sport-rugby { background: #fce7f3; color: #9d174d; }
+    .sport-hockey { background: #eff6ff; color: #1e40af; }
+    .status-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; }
+    .status-on_sale { background: #dcfce7; color: #166534; }
+    .status-coming_soon { background: #eff6ff; color: #1e40af; }
+    .status-action_required { background: #fef9c3; color: #854d0e; }
+    .status-date_unknown { background: #f3f4f6; color: #6b7280; }
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: #fff; border-radius: 12px; padding: 2rem; width: 580px; max-width: 90vw; max-height: 90vh; overflow-y: auto; }
+    .modal-title { font-family: 'DM Serif Display', serif; font-size: 22px; margin-bottom: 1.5rem; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-group.full { grid-column: 1 / -1; }
+    label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #aaa; }
+    input, select, textarea { padding: 8px 10px; border: 0.5px solid #ccc; border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: #1a1a1a; width: 100%; }
+    textarea { resize: vertical; min-height: 60px; }
+    .modal-actions { display: flex; justify-content: space-between; margin-top: 1.5rem; }
+    .toast { position: fixed; bottom: 2rem; right: 2rem; background: #1a1a1a; color: #fff; padding: 12px 20px; border-radius: 8px; font-size: 13px; opacity: 0; transition: opacity 0.3s; z-index: 200; }
+    .toast.show { opacity: 1; }
+    .empty { text-align: center; padding: 4rem; color: #aaa; font-size: 14px; }
+    .notes-preview { font-size: 11px; color: #888; margin-top: 2px; font-style: italic; }
+  </style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-logo">Fluitsignaal — admin</div>
+  <div class="topbar-actions">
+    <button class="btn btn-secondary" onclick="saveAll()">Save all changes</button>
+    <button class="btn btn-primary" onclick="openModal(null)">+ Add event</button>
+  </div>
+</div>
+<div class="main">
+  <div class="filters">
+    <input class="search" type="text" placeholder="Search events..." oninput="renderTable()" id="search" />
+    <div class="filter-chip active" onclick="setFilter('all', this)">All</div>
+    <div class="filter-chip" onclick="setFilter('tennis', this)">🎾 Tennis</div>
+    <div class="filter-chip" onclick="setFilter('football', this)">⚽ Football</div>
+    <div class="filter-chip" onclick="setFilter('golf', this)">⛳ Golf</div>
+    <div class="filter-chip" onclick="setFilter('rugby', this)">🏉 Rugby</div>
+    <div class="filter-chip" onclick="setFilter('hockey', this)">🏑 Hockey</div>
+    <div class="filter-chip" onclick="setFilter('date_unknown', this)">⚠ Unknown dates</div>
+    <div class="filter-chip" onclick="setFilter('spotlight', this)">🔦 Spotlight</div>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Event</th>
+        <th>Sport</th>
+        <th>Status</th>
+        <th>Event dates</th>
+        <th>Sale opens</th>
+        <th>Sale closes</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="table-body">
+      <tr><td colspan="7" class="empty">Loading events...</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-title" id="modal-title">Add event</div>
+    <div class="form-grid">
+      <div class="form-group full"><label>Event name</label><input id="f-name" type="text" /></div>
+      <div class="form-group"><label>Sport</label>
+        <select id="f-sport">
+          <option value="tennis">Tennis</option>
+          <option value="football">Football</option>
+          <option value="golf">Golf</option>
+          <option value="rugby">Rugby</option>
+          <option value="hockey">Hockey</option>
+          <option value="polo">Polo</option>
+          <option value="basketball">Basketball</option>
+          <option value="ijshockey">IJshockey</option>
+          <option value="skating">Schaatsen</option>
+          <option value="padel">Padel</option>
+          <option value="strongman">Strongman</option>
+          <option value="beachvolleybal">Beachvolleybal</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Status</label>
+        <select id="f-status">
+          <option value="coming_soon">Coming soon</option>
+          <option value="on_sale">On sale</option>
+          <option value="action_required">Action required</option>
+          <option value="date_unknown">Date unknown</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Event start date</label><input id="f-event-start" type="date" /></div>
+      <div class="form-group"><label>Event end date</label><input id="f-event-end" type="date" /></div>
+      <div class="form-group"><label>Sale opens (date)</label><input id="f-sale-start" type="date" /></div>
+      <div class="form-group"><label>Sale opens (time)</label><input id="f-sale-time" type="time" placeholder="e.g. 09:00" /></div>
+      <div class="form-group"><label>Sale closes</label><input id="f-sale-end" type="date" /></div>
+      <div class="form-group"></div>
+      <div class="form-group full"><label>Description</label><textarea id="f-description"></textarea></div>
+      <div class="form-group full"><label>Ticket URL</label><input id="f-url" type="text" placeholder="https://..." /></div>
+      <div class="form-group full"><label>Notes</label><textarea id="f-notes" placeholder="e.g. ballot only, members get early access 48hrs before, create account first..."></textarea></div>
+      <div class="form-group full" style="display:flex;align-items:center;gap:10px;padding:0.5rem 0;">
+        <input type="checkbox" id="f-spotlight" style="width:16px;height:16px;cursor:pointer;" />
+        <label for="f-spotlight" style="margin:0;font-size:13px;font-weight:500;cursor:pointer;">Spotlight event — featured in newsletter with extended description</label>
+      </div>
+      <div class="form-group full" id="f-spotlight-wrap" style="display:none;">
+        <label>Spotlight description</label>
+        <textarea id="f-spotlight-description" placeholder="Write 3–5 sentences explaining what this sport/event is and why it is worth attending..."></textarea>
+      </div>
+      <div class="form-group" id="f-ticket-status-wrap" style="display:none;">
+        <label>Ticket status</label>
+        <select id="f-ticket-status">
+          <option value="">—</option>
+          <option value="available">Tickets available</option>
+          <option value="limited">Limited availability</option>
+          <option value="ballot">Ballot / registration</option>
+          <option value="sold_out">Sold out</option>
+          <option value="free">Free entry</option>
+        </select>
+      </div>
+      <div class="form-group" id="f-ticket-scarcity-wrap" style="display:none;">
+        <label>Scarcity</label>
+        <select id="f-ticket-scarcity">
+          <option value="">—</option>
+          <option value="good">Good availability</option>
+          <option value="moderate">Some sections going</option>
+          <option value="tight">Selling fast</option>
+          <option value="very_tight">Very limited</option>
+        </select>
+      </div>
+      <div class="form-group full" id="f-ticket-notes-wrap" style="display:none;">
+        <label>Availability note</label>
+        <textarea id="f-ticket-notes" placeholder="e.g. Friday evening sold out, Saturday still fine, hospitality only, ballot registration closes next week..."></textarea>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-danger btn-small" id="delete-btn" onclick="deleteEvent()" style="display:none">Delete event</button>
+      <div style="display:flex;gap:8px;margin-left:auto">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveEvent()">Save event</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+let events = [];
+let editingId = null;
+let activeFilter = 'all';
+
+async function loadEvents() {
+  const res = await fetch('/events');
+  events = await res.json();
+  renderTable();
+}
+
+function renderTable() {
+  const search = document.getElementById('search').value.toLowerCase();
+  const tbody = document.getElementById('table-body');
+  let filtered = events.filter(e => {
+    const matchFilter = activeFilter === 'all' || e.sport === activeFilter || (activeFilter === 'date_unknown' && e.status === 'date_unknown') || (activeFilter === 'spotlight' && e.spotlight);
+    const matchSearch = !search || e.name.toLowerCase().includes(search) || e.sport.toLowerCase().includes(search);
+    return matchFilter && matchSearch;
+  });
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" class="empty">No events found</td></tr>';
+    return;
+  }
+  tbody.innerHTML = filtered.map(e => `
+    <tr>
+      <td>
+        <strong>${e.name}</strong>
+        ${e.spotlight ? '<span style="font-size:10px;background:#faf5ff;color:#6b21a8;border:0.5px solid #e9d5ff;padding:2px 6px;border-radius:4px;margin-left:4px;">spotlight</span>' : ''}
+        ${e.notes ? '<div class="notes-preview">' + e.notes + '</div>' : ''}
+        ${e.ticket_url ? '<br><a href="'+e.ticket_url+'" target="_blank" style="font-size:11px;color:#888;">'+e.ticket_url.replace('https://','')+'</a>' : ''}
+      </td>
+      <td><span class="sport-badge sport-${e.sport}">${e.sport}</span></td>
+      <td><span class="status-badge status-${e.status}">${e.status.replace(/_/g,' ')}</span></td>
+      <td style="font-size:12px">${e.event_start || '—'}<br><span style="color:#aaa">${e.event_end || ''}</span></td>
+      <td style="font-size:12px">${e.sale_start || '—'}</td>
+      <td style="font-size:12px">${e.sale_end || '—'}</td>
+      <td><button class="btn btn-secondary btn-small" onclick="openModal('${e.id}')">Edit</button></td>
+    </tr>
+  `).join('');
+}
+
+function setFilter(filter, el) {
+  activeFilter = filter;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderTable();
+}
+
+function openModal(id) {
+  editingId = id;
+  const e = id ? events.find(ev => ev.id === id) : null;
+  document.getElementById('modal-title').textContent = e ? 'Edit event' : 'Add event';
+  document.getElementById('delete-btn').style.display = e ? 'block' : 'none';
+  document.getElementById('f-name').value = e ? e.name : '';
+  document.getElementById('f-sport').value = e ? e.sport : 'tennis';
+  document.getElementById('f-status').value = e ? e.status : 'coming_soon';
+  document.getElementById('f-event-start').value = e ? (e.event_start || '') : '';
+  document.getElementById('f-event-end').value = e ? (e.event_end || '') : '';
+  document.getElementById('f-sale-start').value = e ? (e.sale_start || '') : '';
+  document.getElementById('f-sale-time').value = e ? (e.sale_time || '') : '';
+  document.getElementById('f-sale-end').value = e ? (e.sale_end || '') : '';
+  document.getElementById('f-description').value = e ? (e.description || '') : '';
+  document.getElementById('f-url').value = e ? (e.ticket_url || '') : '';
+  document.getElementById('f-notes').value = e ? (e.notes || '') : '';
+  document.getElementById('f-spotlight').checked = e ? !!e.spotlight : false;
+  document.getElementById('f-spotlight-description').value = e ? (e.spotlight_description || '') : '';
+  document.getElementById('f-ticket-status').value = e ? (e.ticket_status || '') : '';
+  document.getElementById('f-ticket-scarcity').value = e ? (e.ticket_scarcity || '') : '';
+  document.getElementById('f-ticket-notes').value = e ? (e.ticket_availability_notes || '') : '';
+  const spotlightOn = e ? !!e.spotlight : false;
+  document.getElementById('f-spotlight-wrap').style.display = spotlightOn ? 'block' : 'none';
+  document.getElementById('f-ticket-status-wrap').style.display = spotlightOn ? 'block' : 'none';
+  document.getElementById('f-ticket-scarcity-wrap').style.display = spotlightOn ? 'block' : 'none';
+  document.getElementById('f-ticket-notes-wrap').style.display = spotlightOn ? 'block' : 'none';
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  editingId = null;
+}
+
+function saveEvent() {
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { alert('Please enter an event name.'); return; }
+  const updated = {
+    id: editingId || name.toLowerCase().replace(/[^a-z0-9]/g, '_'),
+    name,
+    sport: document.getElementById('f-sport').value,
+    status: document.getElementById('f-status').value,
+    event_start: document.getElementById('f-event-start').value,
+    event_end: document.getElementById('f-event-end').value,
+    sale_start: document.getElementById('f-sale-start').value,
+    sale_time: document.getElementById('f-sale-time').value,
+    sale_end: document.getElementById('f-sale-end').value,
+    description: document.getElementById('f-description').value,
+    ticket_url: document.getElementById('f-url').value,
+    notes: document.getElementById('f-notes').value,
+    spotlight: document.getElementById('f-spotlight').checked,
+    spotlight_description: document.getElementById('f-spotlight-description').value,
+    ticket_status: document.getElementById('f-ticket-status').value,
+    ticket_scarcity: document.getElementById('f-ticket-scarcity').value,
+    ticket_availability_notes: document.getElementById('f-ticket-notes').value,
+  };
+  if (editingId) {
+    const idx = events.findIndex(e => e.id === editingId);
+    events[idx] = updated;
+  } else {
+    events.push(updated);
+  }
+  closeModal();
+  renderTable();
+  showToast('Event saved — click "Save all changes" to persist');
+}
+
+function deleteEvent() {
+  if (!confirm('Delete this event?')) return;
+  events = events.filter(e => e.id !== editingId);
+  closeModal();
+  renderTable();
+  showToast('Event deleted — click "Save all changes" to persist');
+}
+
+async function saveAll() {
+  await fetch('/save', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(events) });
+  showToast('All changes saved!');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+document.getElementById('f-spotlight').addEventListener('change', function() {
+  const display = this.checked ? 'block' : 'none';
+  document.getElementById('f-spotlight-wrap').style.display = display;
+  document.getElementById('f-ticket-status-wrap').style.display = display;
+  document.getElementById('f-ticket-scarcity-wrap').style.display = display;
+  document.getElementById('f-ticket-notes-wrap').style.display = display;
+});
+
+loadEvents();
+</script>
+</body>
+</html>

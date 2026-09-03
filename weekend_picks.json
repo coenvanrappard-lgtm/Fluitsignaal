@@ -1,0 +1,47 @@
+[
+  {
+    "name": "CRUYFF – World Premiere Documentary",
+    "category": "Film",
+    "date": "Saturday 21 March, 18:00",
+    "location": "Johan Cruijff ArenA",
+    "description": "First two episodes of the Cruyff documentary — produced by the team behind Senna and Drive to Survive. Never-seen footage, his own audio tapes, Guardiola on camera. 46,000 expected. A genuine once-in-a-generation Amsterdam moment.",
+    "url": "https://www.ticketmaster.nl/artist/cruijff-premiere-tickets/1436303",
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/2/21/Cruyff1974.jpg"
+  },
+  {
+    "name": "Tyler Childers",
+    "category": "Music",
+    "date": "Saturday 21 March, 20:00",
+    "location": "AFAS Live",
+    "description": "American country/folk artist on his European Snipe Hunter tour. One of the best live acts in the game right now — if you like Sturgill Simpson or Zach Bryan, don't miss this.",
+    "url": "https://www.afaslive.nl/en/agenda/tyler-childers",
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/4/46/Tyler_Childers-19_%2832662845828%29.jpg"
+  },
+  {
+    "name": "Thuishaven w/ Adam Beyer",
+    "category": "Music",
+    "date": "Sunday 22 March, 13:00–23:00",
+    "location": "Thuishaven, Contactweg 68",
+    "description": "Sunday afternoon techno in one of Amsterdam's best outdoor/indoor venues. Adam Beyer headlines. €29.50 — worth it.",
+    "url": "https://thuishaven.nl/22-mrt-thuishaven-w-adam-beyer-more/",
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Adam_Beyer_%283559941164%29.jpg"
+  },
+  {
+    "name": "Holland Zingt Hazes – 14th edition",
+    "category": "Music",
+    "date": "Saturday 21 March, 20:00",
+    "location": "Ziggo Dome",
+    "description": "17,000 people, Andre Jr., Roxeanne, Mart Hoogkamer, Snelle and more — 50 years of Andre Hazes celebrated exactly as it should be. Always a big night.",
+    "url": "https://www.ziggodome.nl/en/events/2e592953-f7e8-4d3d-b500-563e915325db/",
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Ziggo_Dome_inside.JPG"
+  },
+  {
+    "name": "Candlelight: Amsterdam Klezmer Band",
+    "category": "Music",
+    "date": "Saturday 21 March, 19:30",
+    "location": "Portuguese Synagogue, Amsterdam",
+    "description": "Klezmer, Balkan, ska and jazz by candlelight in the Portuguese Synagogue. One of the city's most beautiful venues, and a rare combination of setting and sound.",
+    "url": "https://jck.nl/en/agenda/candlelight-concert-amsterdam-klezmer-band",
+    "image_url": ""
+  }
+]

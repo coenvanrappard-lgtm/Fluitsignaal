@@ -1,0 +1,22 @@
+name: Weekly digest
+
+on:
+  schedule:
+    # 06:00 UTC Monday = 08:00 Amsterdam during CEST (summer), 07:00 during CET (winter).
+    # GitHub Actions cron doesn't follow DST, so this drifts by an hour twice a year.
+    - cron: "0 6 * * 1"
+  workflow_dispatch: {}
+
+jobs:
+  send-digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - run: python3 weekly_digest.py
+        env:
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}

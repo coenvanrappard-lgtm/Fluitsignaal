@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fluitsignaal Tickets</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="site.css" />
+</head>
+<body data-page="tickets">
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="brand" href="index.html">
+        <img src="https://coenvanrappard-lgtm.github.io/Fluitsignaal/logo.png" alt="Fluitsignaal logo" />
+        <div>
+          <div class="brand-wordmark">Fluitsignaal</div>
+          <div class="brand-tag">Tickets</div>
+        </div>
+      </a>
+      <nav class="topnav">
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a class="active" href="tickets.html">Tickets</a>
+        <a href="amsterdam.html">Amsterdam this weekend</a>
+      </nav>
+    </header>
+
+    <section class="page-hero">
+      <div class="eyebrow">Tickets</div>
+      <h1>All ticket alerts in one place.</h1>
+      <p>The utility side of Fluitsignaal should live here: tickets already on sale, what needs setup before the window opens, what is coming next, and the one event worth keeping an extra eye on.</p>
+      <div class="page-subnav">
+        <a href="#live-now">Live now</a>
+        <a href="#action-required">Action required</a>
+        <a href="#coming-up">Coming up</a>
+        <a href="#spotlight">Spotlight</a>
+        <a href="#all-events">All tracked events</a>
+      </div>
+      <div class="summary-strip" id="tickets-summary"></div>
+    </section>
+
+    <section class="section" id="live-now">
+      <div class="section-heading">
+        <div class="eyebrow">Live now</div>
+        <h2>Tickets already on sale.</h2>
+      </div>
+      <div class="section-list" id="tickets-live"></div>
+    </section>
+
+    <section class="section" id="action-required">
+      <div class="section-heading">
+        <div class="eyebrow">Action required</div>
+        <h2>What needs setting up before the sale opens.</h2>
+      </div>
+      <div class="section-list" id="tickets-action"></div>
+    </section>
+
+    <section class="section" id="coming-up">
+      <div class="section-heading">
+        <div class="eyebrow">Coming up</div>
+        <h2>The next sale windows.</h2>
+      </div>
+      <div id="tickets-coming"></div>
+    </section>
+
+    <section class="section" id="spotlight">
+      <div class="section-heading">
+        <div class="eyebrow">Spotlight</div>
+        <h2>One event worth more than a line item.</h2>
+      </div>
+      <div id="tickets-spotlight"></div>
+    </section>
+
+    <section class="section" id="all-events">
+      <div class="section-heading">
+        <div class="eyebrow">All tracked events</div>
+        <h2>The full list behind the alerts.</h2>
+      </div>
+      <div id="tickets-all"></div>
+    </section>
+  </div>
+  <script src="site.js"></script>
+</body>
+</html>
