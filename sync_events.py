@@ -1,14 +1,14 @@
 import json
 import gspread
-from google.oauth2.service_account import Credentials
 
-SPREADSHEET_ID = "1EJLyAMCo_A_WXSO1LpX1MGZBTx8JdjbHColuTTJVUVA"
-CREDENTIALS_FILE = "Credentials.json"
+import config
+from config import SPREADSHEET_ID
+
 HEADERS = ["id", "name", "sport", "status", "event_start", "event_end", "sale_start", "sale_time", "sale_end", "description", "ticket_url", "notes", "spotlight", "spotlight_description", "ticket_status", "ticket_scarcity", "ticket_availability_notes"]
 
 def get_spreadsheet():
     scopes = ["https://www.googleapis.com/auth/spreadsheets"]
-    creds = Credentials.from_service_account_file(CREDENTIALS_FILE, scopes=scopes)
+    creds = config.google_credentials(scopes)
     client = gspread.authorize(creds)
     return client.open_by_key(SPREADSHEET_ID)
 

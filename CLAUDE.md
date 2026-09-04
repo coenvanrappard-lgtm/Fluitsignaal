@@ -16,16 +16,18 @@ Ticket alert service that notifies users when tickets go on sale for major sport
 ## Project structure
 - `events_db.json` — master database of all events (edit via admin, not directly)
 - `config.py` — shared config: loads all secrets from environment variables, no hardcoded credentials in any script
-- `users.csv` — stale/unused. Real subscribers live in a Google Sheet (`SPREADSHEET_ID` in config.py, worksheet "Users"); `send_alerts.py`/`weekly_digest.py`/`welcome_email.py` all read from there, not this file
+- Subscribers live in a Google Sheet (`SPREADSHEET_ID` in config.py, worksheet "Users"); `send_alerts.py`/`weekly_digest.py`/`welcome_email.py` all read from there. `users.csv` was removed 2026-09-04 — it was dead, unused by any script.
 - `send_alerts.py` — daily alert script, runs at 9am via cron
 - `weekly_digest.py` — weekly HTML email digest, runs Monday 8am via cron
 - `welcome_email.py` — sends the welcome email to new signups
-- `admin.py` — local web server for the event admin interface
+- `sync_events.py` — pushes events_db.json to the "Events" worksheet in the same Google Sheet; called automatically by admin.py's /save endpoint
+- `admin.py` — local web server for the event admin interface (its /save endpoint writes events_db.json and triggers sync_events.py — use this instead of hand-editing the JSON)
 - `admin.html` — admin UI, runs at http://localhost:8765
+- `apps_script.gs` — Google Apps Script backend (deployed separately on Google's side, not run from this repo) for the signup form and Stripe checkout; reads `STRIPE_SECRET` from Apps Script's own Script Properties, not from this file
 
 ## Secrets / config
 All secrets are loaded from environment variables via `config.py` — nothing is hardcoded in the scripts anymore (fixed 2026-09-03, see Important notes).
-- `SMTP_PASSWORD` — Gmail app password for Jouwfluitsignaal@gmail.com (required)
+- `SMTP_PASSWORD` — Gmail app password for Jouwfluitsignaal@gmail.com (needed by anything that sends email; not required to import config.py itself — e.g. sync_events.py only needs Google creds)
 - `TWILIO_SID` / `TWILIO_TOKEN` — optional, only needed if SMS reminders are used
 - `GOOGLE_CREDENTIALS_JSON` — full service-account JSON as a string (used in GitHub Actions); falls back to a local `credentials.json` file (path overridable via `GOOGLE_CREDENTIALS_FILE`) for local runs — that file is gitignored, never commit it
 - For local manual runs, secret values are in `.env.local` (gitignored) — `set -a; source .env.local; set +a` before running a script
@@ -63,12 +65,11 @@ Digest currently goes to: coenvanrappard@gmail.com
 - `date_unknown` — monitoring, no date yet
 
 ## Adding a new user
-Add a line to users.csv:
-`Name,email@example.com,,free,event_id_1|event_id_2`
+Add a row to the "Users" worksheet in the Google Sheet (`SPREADSHEET_ID` in config.py), or via the signup form on the live site (posts to the Apps Script backend, which appends the row).
 
-## Website
-Live at: https://coenvanrappard-lgtm.github.io/Fluitsignaal
-Files: index.html and dashboard.html (upload to GitHub to publish)
+## Website / repo
+Live at: https://fluitsignaal.com (custom domain, CNAME in repo) — GitHub Pages serving https://github.com/coenvanrappard-lgtm/Fluitsignaal, public repo, default branch `main`.
+This local folder and that GitHub repo were reconciled 2026-09-04 — before that, the live site's actual history (developed via a separate Claude session over several months, 90+ commits) had diverged from what existed locally. They're merged now; push/pull normally with git, no more manual uploading.
 
 ## Important notes
 - Project lives locally at `~/Fluitsignaal` (moved off iCloud Drive on 2026-09-03 — cron/launchd couldn't read files under `~/Library/Mobile Documents/...` without Full Disk Access, which kept silently breaking). It's a git repo now; the old iCloud copy is archived at `Claude agent/Fluitsignaal (archief - verplaatst naar ~-Fluitsignaal)`.
@@ -80,5 +81,12 @@ Files: index.html and dashboard.html (upload to GitHub to publish)
 ## GitHub Actions (scheduled sends)
 - `.github/workflows/daily-alerts.yml` — runs `send_alerts.py` daily at 07:00 UTC
 - `.github/workflows/weekly-digest.yml` — runs `weekly_digest.py` Mondays at 06:00 UTC
-- Both need these repo secrets set (Settings → Secrets and variables → Actions): `SMTP_PASSWORD`, `TWILIO_SID`, `TWILIO_TOKEN`, `GOOGLE_CREDENTIALS_JSON` (paste the full service-account JSON file content as the secret value)
+- Repo secrets are set (Settings → Secrets and variables → Actions): `SMTP_PASSWORD`, `TWILIO_SID`, `TWILIO_TOKEN`, `GOOGLE_CREDENTIALS_JSON`. Both workflows were manually triggered and verified working end-to-end on 2026-09-03 (digest actually sent from a GitHub-hosted runner).
 - Local admin edits to events_db.json only take effect in the cloud runs once committed and pushed — the workflow checks out the repo fresh each run
+- Local cron/launchd was never re-set-up after the 2026-09-03 move and doesn't need to be — these GitHub Actions workflows are now the only scheduled sender, running regardless of whether this laptop is on
+
+## Known outstanding items (2026-09-04)
+- The Apps Script backend (`apps_script.gs`) is deployed separately on Google's infrastructure. Its *deployed* copy likely still has the Stripe secret key hardcoded (from before the 2026-09-03 cleanup) — the source in this repo no longer does. Needs manually adding `STRIPE_SECRET` under the Apps Script project's Script Properties, then redeploying with the current script.
+- `apps_script.gs` was never previously tracked in the live site's git history — only existed locally until the 2026-09-04 merge. Worth confirming the currently-deployed Apps Script version actually matches what's in this repo now.
+- `events.py` is an old unused static seed list (stale dates, doesn't match current event ids) — not imported anywhere, candidate for deletion.
+- No subscriber signup flow issue — one already exists (site form → apps_script.gs `doPost` → Google Sheet). Low subscriber count (1) is a distribution/marketing question, not a missing feature.

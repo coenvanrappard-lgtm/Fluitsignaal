@@ -9,17 +9,7 @@ DASHBOARD_URL = "https://fluitsignaal.com/dashboard.html"
 TWILIO_FROM = "+19047562903"
 
 
-def _require(name):
-    value = os.environ.get(name)
-    if not value:
-        raise RuntimeError(
-            f"Missing required environment variable: {name}. "
-            "Set it locally (see .env.local) or as a GitHub Actions secret."
-        )
-    return value
-
-
-SMTP_PASSWORD = _require("SMTP_PASSWORD")
+SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD", "")
 TWILIO_SID = os.environ.get("TWILIO_SID", "")
 TWILIO_TOKEN = os.environ.get("TWILIO_TOKEN", "")
 
