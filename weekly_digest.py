@@ -10,6 +10,17 @@ from urllib.parse import quote
 import config
 from config import SMTP_USER, SMTP_PASSWORD, SPREADSHEET_ID
 
+SPORT_FALLBACK_IMAGES = {
+    "tennis": "https://upload.wikimedia.org/wikipedia/commons/d/de/Wimbledon_qualifying_%289592242753%29.jpg",
+    "football": "https://upload.wikimedia.org/wikipedia/commons/9/91/NED-DEN_Euro_2012_%2801%29.jpg",
+    "golf": "https://upload.wikimedia.org/wikipedia/commons/6/6e/Hazeltine_National_Golf_Club_2016_Ryder_Cup.jpg",
+    "rugby": "https://upload.wikimedia.org/wikipedia/commons/9/9b/Spain_vs_Portugal_rugby_union_match_in_Santiago_de_Compostela.jpg",
+    "hockey": "https://commons.wikimedia.org/wiki/Special:FilePath/Field%20hockey%20at%20the%202012%20Summer%20Olympics.jpg",
+}
+
+def event_image(e):
+    return e.get("image_url") or SPORT_FALLBACK_IMAGES.get(e.get("sport"), "")
+
 def load_events():
     with open("events_db.json") as f:
         return json.load(f)
@@ -117,9 +128,9 @@ def live_card(e, status_type):
 
     ticket_url = e.get("ticket_url", "")
     btn = f'<a href="{ticket_url}" style="display:inline-block;background:{btn_color};color:#fff;padding:11px 20px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;letter-spacing:-0.01em;min-width:168px;text-align:center;box-sizing:border-box;">{btn_text} →</a>' if ticket_url else ""
-    img_url = e.get("image_url", "")
-    img_col = f'<td width="186" style="vertical-align:middle;text-align:right;padding:8px 20px 20px 12px;"><img src="{img_url}" width="156" height="118" style="display:block;object-fit:cover;object-position:center top;border-radius:16px;border:1px solid {image_border};box-shadow:0 8px 22px rgba(17,24,39,0.06);background:#f4f4f4;" /></td>' if img_url else ""
-    description_html = f'<div style="font-size:14px;color:#58606b;line-height:1.65;margin-top:14px;max-width:360px;">{description}</div>' if description else ""
+    img_url = event_image(e)
+    img_col = f'<td width="200" style="vertical-align:middle;text-align:right;padding:8px 22px 20px 14px;"><img src="{img_url}" width="176" height="132" style="display:block;object-fit:cover;object-position:center top;border-radius:16px;border:1px solid {image_border};box-shadow:0 8px 22px rgba(17,24,39,0.06);background:#f4f4f4;" /></td>' if img_url else ""
+    description_html = f'<div style="font-size:14px;color:#58606b;line-height:1.65;margin-top:14px;max-width:420px;">{description}</div>' if description else ""
 
     return f"""
     <tr>
@@ -145,12 +156,12 @@ def live_card(e, status_type):
 def attention_card(e):
     sale_start = e.get("sale_start", "")
     notes = e.get("notes", "")
-    img_url = e.get("image_url", "")
+    img_url = event_image(e)
     if notes:
-        detail = f'<div style="font-size:13px;color:#58606b;padding:12px 14px;background:#fafafa;border:1px solid #ececec;border-radius:10px;line-height:1.65;max-width:360px;">{notes}</div>'
+        detail = f'<div style="font-size:13px;color:#58606b;padding:12px 14px;background:#fafafa;border:1px solid #ececec;border-radius:10px;line-height:1.65;max-width:420px;">{notes}</div>'
         btn_text = "Get set up"
     else:
-        detail = '<div style="font-size:13px;color:#58606b;padding:12px 14px;background:#fafafa;border:1px solid #ececec;border-radius:10px;line-height:1.65;max-width:360px;">A few details still need confirming before reminder emails can go out.</div>'
+        detail = '<div style="font-size:13px;color:#58606b;padding:12px 14px;background:#fafafa;border:1px solid #ececec;border-radius:10px;line-height:1.65;max-width:420px;">A few details still need confirming before reminder emails can go out.</div>'
         btn_text = "View ticket page"
 
     cal = gcal_link(e["name"], sale_start)
@@ -159,7 +170,7 @@ def attention_card(e):
     cal_btn = f'<a href="{cal}" style="display:inline-block;background:#f3f4f6;color:#374151;padding:10px 18px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;">Set a reminder</a>' if cal else ""
 
     sale_date_line = f'<div style="font-size:14px;color:#7a7a7a;margin-top:8px;font-weight:500;">Sale opens {format_date_short(sale_start)}</div>' if sale_start else ""
-    img_col = f'<td width="186" style="vertical-align:middle;text-align:right;padding:8px 20px 20px 12px;"><img src="{img_url}" width="156" height="118" style="display:block;object-fit:cover;object-position:center top;border-radius:16px;border:1px solid #dadfda;box-shadow:0 8px 22px rgba(17,24,39,0.05);background:#f4f4f4;" /></td>' if img_url else ""
+    img_col = f'<td width="200" style="vertical-align:middle;text-align:right;padding:8px 22px 20px 14px;"><img src="{img_url}" width="176" height="132" style="display:block;object-fit:cover;object-position:center top;border-radius:16px;border:1px solid #dadfda;box-shadow:0 8px 22px rgba(17,24,39,0.05);background:#f4f4f4;" /></td>' if img_url else ""
 
     return f"""
     <tr>
@@ -187,62 +198,28 @@ def coming_up_rows(events_list):
         sale_start = format_date_short(e.get("sale_start", ""))
         cal = gcal_link(e["name"], e.get("sale_start", ""))
         cal_link_html = f'&nbsp;<a href="{cal}" style="font-size:11px;color:#aaa;text-decoration:none;">+ calendar</a>' if cal else ""
+        img_url = event_image(e)
+        img_td = f'<td width="52" style="padding:8px 12px 8px 0;border-bottom:0.5px solid #f5f5f5;"><img src="{img_url}" width="44" height="44" style="display:block;object-fit:cover;border-radius:8px;background:#f4f4f4;" /></td>' if img_url else ""
         rows += f"""
         <tr>
+          {img_td}
           <td style="padding:8px 0;border-bottom:0.5px solid #f5f5f5;font-size:13px;color:#1a1a1a;">{e['name']}</td>
           <td style="padding:8px 0;border-bottom:0.5px solid #f5f5f5;font-size:13px;color:#666;text-align:right;white-space:nowrap;">sale opens {sale_start} {cal_link_html}</td>
         </tr>
         """
     return rows
 
-def section_break(label, title, description, accent, top_pad=28, anchor=""):
+def section_break(label, accent, top_pad=28, anchor=""):
     anchor_html = f'<a id="{anchor}" style="display:block;position:relative;top:-8px;"></a>' if anchor else ""
     return f"""
-    <tr><td style="padding:{top_pad}px 0 16px;">
+    <tr><td style="padding:{top_pad}px 0 4px;">
       {anchor_html}
       <table width="100%" cellpadding="0" cellspacing="0">
         <tr>
           <td style="padding-bottom:10px;border-top:1px solid #ececec;"></td>
         </tr>
       </table>
-      <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:{accent};margin-bottom:6px;">{label}</div>
-      <div style="font-size:22px;font-weight:700;letter-spacing:-0.03em;color:#1a1a1a;">{title}</div>
-      <div style="font-size:13px;color:#666;line-height:1.6;margin-top:4px;">{description}</div>
-    </td></tr>"""
-
-def build_digest_overview(has_live, has_action, has_coming, has_spotlight):
-    items = []
-    if has_live or has_action or has_coming or has_spotlight:
-        items.append(("Tickets", "Live sales, action points, upcoming windows and a spotlight pick", "#tickets"))
-
-    if not items:
-        return ""
-
-    rows_html = "".join(
-        f"""
-        <tr>
-          <td style="padding:7px 0;border-bottom:0.5px solid #ececec;">
-            <a href="{href}" style="font-size:13px;color:#1a1a1a;text-decoration:none;font-weight:600;">{title}</a>
-          </td>
-          <td style="padding:7px 0;border-bottom:0.5px solid #ececec;font-size:12px;color:#777;text-align:right;">{desc}</td>
-        </tr>"""
-        for title, desc, href in items
-    )
-    return f"""
-    <tr><td style="padding:22px 0 8px;">
-      <table width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid #dfe5df;border-radius:22px;">
-        <tr>
-          <td style="padding:22px 22px 10px;vertical-align:top;">
-            <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#6b7280;">In this issue</div>
-            <div style="font-size:18px;font-weight:700;letter-spacing:-0.03em;color:#1a1a1a;line-height:1.2;margin-top:8px;">A quick scan of what’s inside this week’s digest.</div>
-          </td>
-        </tr>
-        <tr>
-          <td style="padding:0 22px 14px;">
-            <table width="100%" cellpadding="0" cellspacing="0">{rows_html}</table>
-          </td>
-        </tr>
-      </table>
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:{accent};">{label}</div>
     </td></tr>"""
 
 def spotlight_ticket_block(e):
@@ -360,12 +337,6 @@ def send_digest(user_name, user_email):
 
     # Spotlight section — featured card + ranked list of all spotlight events
     spotlight_pool = [e for e in all_events if e.get("spotlight") and e.get("spotlight_description")]
-    overview_section = build_digest_overview(
-        bool(on_sale or closing_soon),
-        bool(action_required),
-        bool(opening_soon or coming_later),
-        bool(spotlight_pool),
-    )
     spotlight_section = ""
     if spotlight_pool:
         def spotlight_sort_key(e):
@@ -397,7 +368,8 @@ def send_digest(user_name, user_email):
             event_date_str = f'<div style="font-size:12px;margin-top:4px;">{location_html}{date_range}&nbsp;&nbsp;{days_html}</div>'
         availability_html = spotlight_ticket_block(spot)
         btn = f'<a href="{spot["ticket_url"]}" style="display:inline-block;background:#166534;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;margin-top:14px;">More info →</a>' if spot.get("ticket_url") else ""
-        image_html = f'<div style="float:right;width:150px;margin:6px 0 12px 18px;text-align:center;"><img src="{spot["image_url"]}" width="132" height="132" style="display:block;object-fit:cover;object-position:center top;border-radius:999px;border:1px solid #dbdfdc;box-shadow:0 8px 22px rgba(17,24,39,0.05);background:#f4f4f4;margin:0 auto;" /></div>' if spot.get("image_url") else ""
+        spot_img_url = event_image(spot)
+        hero_image = f'<div style="padding:0 1.6rem;"><img src="{spot_img_url}" width="100%" height="220" style="display:block;width:100%;height:220px;object-fit:cover;object-position:center 30%;border-radius:14px;background:#f4f4f4;" /></div>' if spot_img_url else ""
         featured_card = f"""
           <div style="background:#ffffff;border:1px solid #dfe5df;border-radius:22px;overflow:hidden;margin-bottom:12px;">
             <table width="100%" cellpadding="0" cellspacing="0">
@@ -407,13 +379,13 @@ def send_digest(user_name, user_email):
                   {event_date_str}
                 </td>
               </tr>
+              <tr><td style="padding:0.7rem 0;">{hero_image}</td></tr>
               <tr>
                 <td style="padding:0.55rem 1.6rem 1.6rem;vertical-align:top;">
                   <div style="font-size:13px;color:#4b5563;line-height:1.8;">
-                    {image_html}
                     {spot['spotlight_description']}
                     {availability_html}
-                    <div style="clear:both;">{btn}</div>
+                    <div>{btn}</div>
                   </div>
                 </td>
               </tr>
@@ -428,7 +400,9 @@ def send_digest(user_name, user_email):
                     s_date = format_date_short(val)
                     break
             s_btn = f'<a href="{s["ticket_url"]}" style="font-size:11px;color:#1a1a1a;text-decoration:none;">More info →</a>' if s.get("ticket_url") else ""
-            rest_rows += f'<tr><td style="padding:7px 0;border-bottom:0.5px solid #ececec;font-size:13px;color:#1a1a1a;">{s["name"]}</td><td style="padding:7px 0;border-bottom:0.5px solid #ececec;font-size:12px;color:#888;text-align:right;white-space:nowrap;">{s_date}&nbsp;&nbsp;{s_btn}</td></tr>'
+            s_img_url = event_image(s)
+            s_img_td = f'<td width="52" style="padding:7px 12px 7px 0;border-bottom:0.5px solid #ececec;"><img src="{s_img_url}" width="44" height="44" style="display:block;object-fit:cover;border-radius:8px;background:#f4f4f4;" /></td>' if s_img_url else ""
+            rest_rows += f'<tr>{s_img_td}<td style="padding:7px 0;border-bottom:0.5px solid #ececec;font-size:13px;color:#1a1a1a;">{s["name"]}</td><td style="padding:7px 0;border-bottom:0.5px solid #ececec;font-size:12px;color:#888;text-align:right;white-space:nowrap;">{s_date}&nbsp;&nbsp;{s_btn}</td></tr>'
         rest_table = f'<table width="100%" cellpadding="0" cellspacing="0">{rest_rows}</table>' if rest_rows else ""
         spotlight_section = f"""
         <tr><td style="padding:1.5rem 0 0;">
@@ -444,7 +418,7 @@ def send_digest(user_name, user_email):
     <html><head>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
     </head><body style="font-family:'Helvetica Neue',Arial,sans-serif;background:#f5f5f3;margin:0;padding:1.5rem;">
-    <div style="max-width:540px;margin:0 auto;background:#fff;">
+    <div style="max-width:640px;margin:0 auto;background:#fff;">
 
       <div style="height:6px;background:#ff6a13;"></div>
       <div style="padding:1.35rem 2rem 1.25rem;border-bottom:1px solid #ece8e1;background:linear-gradient(180deg,#fff8f2 0%,#ffffff 100%);">
@@ -474,8 +448,7 @@ def send_digest(user_name, user_email):
 
       <div style="padding:0 2rem 2rem;">
         <table width="100%" cellpadding="0" cellspacing="0">
-          {overview_section}
-          {section_break("Tickets", "Ticket alerts", "The sales that are live, approaching, or worth preparing for before the window opens.", "#ff6a13", 24, "tickets") if (live_section or attention_section or coming_section or spotlight_section) else ""}
+          {section_break("Tickets", "#ff6a13", 20, "tickets") if (live_section or attention_section or coming_section or spotlight_section) else ""}
           {live_section}
           {attention_section}
           {coming_section}
