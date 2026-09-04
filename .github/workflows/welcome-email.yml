@@ -1,0 +1,23 @@
+name: Welcome email for new signups
+
+on:
+  schedule:
+    # Every 30 minutes — catches new signups from the site promptly.
+    - cron: "*/30 * * * *"
+  workflow_dispatch: {}
+
+jobs:
+  send-welcome:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - run: python3 welcome_email.py
+        env:
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          TWILIO_SID: ${{ secrets.TWILIO_SID }}
+          TWILIO_TOKEN: ${{ secrets.TWILIO_TOKEN }}
+          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}

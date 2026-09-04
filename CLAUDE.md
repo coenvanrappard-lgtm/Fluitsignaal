@@ -81,7 +81,8 @@ This local folder and that GitHub repo were reconciled 2026-09-04 — before tha
 ## GitHub Actions (scheduled sends)
 - `.github/workflows/daily-alerts.yml` — runs `send_alerts.py` daily at 07:00 UTC
 - `.github/workflows/weekly-digest.yml` — runs `weekly_digest.py` Mondays at 06:00 UTC
-- Repo secrets are set (Settings → Secrets and variables → Actions): `SMTP_PASSWORD`, `TWILIO_SID`, `TWILIO_TOKEN`, `GOOGLE_CREDENTIALS_JSON`. Both workflows were manually triggered and verified working end-to-end on 2026-09-03 (digest actually sent from a GitHub-hosted runner).
+- `.github/workflows/welcome-email.yml` — runs `welcome_email.py` every 30 min, added 2026-09-04. Previously this had no schedule anywhere, local or cloud — new signups from the site never got a welcome email.
+- Repo secrets are set (Settings → Secrets and variables → Actions): `SMTP_PASSWORD`, `TWILIO_SID`, `TWILIO_TOKEN`, `GOOGLE_CREDENTIALS_JSON`. All three workflows have been manually triggered and verified working end-to-end from a GitHub-hosted runner.
 - Local admin edits to events_db.json only take effect in the cloud runs once committed and pushed — the workflow checks out the repo fresh each run
 - Local cron/launchd was never re-set-up after the 2026-09-03 move and doesn't need to be — these GitHub Actions workflows are now the only scheduled sender, running regardless of whether this laptop is on
 
