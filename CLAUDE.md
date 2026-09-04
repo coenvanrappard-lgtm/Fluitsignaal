@@ -88,5 +88,4 @@ This local folder and that GitHub repo were reconciled 2026-09-04 — before tha
 ## Known outstanding items (2026-09-04)
 - The Apps Script backend (`apps_script.gs`) is deployed separately on Google's infrastructure. Its *deployed* copy likely still has the Stripe secret key hardcoded (from before the 2026-09-03 cleanup) — the source in this repo no longer does. Needs manually adding `STRIPE_SECRET` under the Apps Script project's Script Properties, then redeploying with the current script.
 - `apps_script.gs` was never previously tracked in the live site's git history — only existed locally until the 2026-09-04 merge. Worth confirming the currently-deployed Apps Script version actually matches what's in this repo now.
-- `events.py` is an old unused static seed list (stale dates, doesn't match current event ids) — not imported anywhere, candidate for deletion.
 - No subscriber signup flow issue — one already exists (site form → apps_script.gs `doPost` → Google Sheet). Low subscriber count (1) is a distribution/marketing question, not a missing feature.
